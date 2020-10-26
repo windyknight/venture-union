@@ -23,7 +23,7 @@ CREATE TABLE pawn_ticket(
   ticket_no     INT NOT NULL UNIQUE PRIMARY KEY,
   pawn_date     DATE NOT NULL DEFAULT CURRENT_DATE(),
   due_date      AS pawn_date + interval '1 month',
-  payment_date  DATE DEFAULT due_date,
+  payment_date  DATE DEFAULT due_date
 );
 CREATE TABLE risk(
   risk_level    ENUM('Low', 'Medium', 'High', 'Very High') NOT NULL UNIQUE PRIMARY KEY,
