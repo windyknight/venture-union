@@ -1,10 +1,7 @@
-DROP TABLE customer;
-DROP TABLE risk;
-DROP TABLE item;
-DROP TABLE pawn_ticket;
-DROP TABLE inventory_tag;
-DROP TABLE receipt;
+DROP TYPE risk_levels CASCADE;
+DROP TABLE customer, risk, item, pawn_ticket, inventory_tag, receipt CASCADE;
 DROP DATABASE Homestuck;
+
 CREATE DATABASE Homestuck;
 
 CREATE TYPE risk_levels AS ENUM('Low', 'Medium', 'High', 'Very High');
