@@ -1,3 +1,5 @@
+CREATE TYPE risk_levels AS ENUM('Low', 'Medium', 'High', 'Very High');
+
 CREATE TABLE customer(
   customer_id     INT NOT NULL UNIQUE PRIMARY KEY,
   last_name       VARCHAR(25) NOT NULL,
@@ -8,35 +10,40 @@ CREATE TABLE customer(
   mobile          VARCHAR(25),
   landline        VARCHAR(25),
   postal_code     INT NOT NULL,
-  birth_date      DATE NOT NULL,
-  age             AS (CONVERT(INT,CONVERT(CHAR(8),CURRENT_DATE(),112))-CONVERT(CHAR(8),birth_date,112))/10000
+  birth_date      DATE NOT NULL
+  -- age             INT GENERATED ALWAYS AS (CAST((
+  --   CAST(TO_CHAR(CURRENT_DATE, 'YYYYMMDD') AS INT) - CAST(TO_CHAR(birth_date, 'YYYYMMDD') AS INT)
+  -- ) AS INT)/10000) STORED
+);
+CREATE TABLE risk(
+  risk_level    risk_levels NOT NULL UNIQUE PRIMARY KEY,
+  interest_rate FLOAT NOT NULL
 );
 CREATE TABLE item(
   item_no     INT NOT NULL UNIQUE PRIMARY KEY,
   category    VARCHAR(25) NOT NULL,
   description VARCHAR(255),
-  risk_level  ENUM('Low', 'Medium', 'High', 'Very High') NOT NULL,
+  risk_level  risk_levels NOT NULL,
   amount      FLOAT NOT NULL,
   FOREIGN KEY (risk_level) REFERENCES risk(risk_level) ON DELETE RESTRICT
 );
 CREATE TABLE pawn_ticket(
   ticket_no     INT NOT NULL UNIQUE PRIMARY KEY,
-  pawn_date     DATE NOT NULL DEFAULT CURRENT_DATE(),
-  due_date      AS pawn_date + interval '1 month',
-  payment_date  DATE DEFAULT due_date
+  pawn_date     DATE NOT NULL DEFAULT CURRENT_DATE,
+  due_date      DATE GENERATED ALWAYS AS (pawn_date + interval '1 month') STORED,
+  payment_date  DATE
 );
-CREATE TABLE risk(
-  risk_level    ENUM('Low', 'Medium', 'High', 'Very High') NOT NULL UNIQUE PRIMARY KEY,
-  interest_rate FLOAT NOT NULL
-);
+
 CREATE TABLE inventory_tag(
-  item_no       INT NOT NULL UNIQUE PRIMARY KEY,
-  customer_name VARCHAR(255) NOT NULL,
+  item_no       INT NOT NULL,
+  customer_id   INT NOT NULL,
   description   VARCHAR(255),
   category      VARCHAR(25) NOT NULL,
   pawn_date     DATE NOT NULL,
-  amount        FLOAT NOT NULL
-  FOREIGN KEY (item_no) REFERENCES item(item_no) ON DELETE RESTRICT
+  amount        FLOAT NOT NULL,
+  PRIMARY KEY (item_no, customer_id),
+  FOREIGN KEY (item_no) REFERENCES item(item_no) ON DELETE RESTRICT,
+  FOREIGN KEY (customer_id) REFERENCES customer(customer_id) ON DELETE RESTRICT
 );
 CREATE TABLE receipt(
   payment_date  DATE
