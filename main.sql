@@ -1,9 +1,10 @@
-DROP TABLE customer;
-DROP TABLE risk;
-DROP TABLE item;
 DROP TABLE pawn_ticket;
 DROP TABLE inventory_tag;
 DROP TABLE receipt;
+DROP TABLE item;
+DROP TABLE risk;
+DROP TABLE customer;
+DROP TYPE risk_levels;
 DROP DATABASE Homestuck;
 CREATE DATABASE Homestuck;
 
