@@ -205,7 +205,7 @@ blank1.grid(column=0,row=0)
 title.grid(column=1,row=0)
 
 #labels
-customerAttributes = ["Customer ID", "Last Name", "Given Name", "MI", "Address", "City", "Mobile", "Landline", "Postal Code", "Birth Date", "Age"]
+customerAttributes = ["Customer ID", "Last Name", "Given Name", "MI", "Address", "City", "Mobile", "Landline", "Postal Code", "Birth Date"]
 labelWidth = 20
 customerDetails = []
 customerIDNum = 0
@@ -229,11 +229,45 @@ for a in customerAttributes:
     i+=1
     
 #button
+
+warning = tk.Label(newCustomerFrameA, text="", bg=bgcolor, fg="red", font="Times 12", width=labelWidth+10)
 def addCustomerAction():
-    cur.execute(f"INSERT INTO item VALUES ({customerDetails[0].cget('text')},'{customerDetails[1].get()}','{customerDetails[2].get()}','{customerDetails[3].get()}',{customerDetails[4].get()},{customerDetails[5].get()},{customerDetails[6].get()},{customerDetails[7].get()},{customerDetails[8].get()},{customerDetails[9].get()});")
+    #checking for null
     
-    for a in customerDetails:
-        a.delete(0,'end')
+    if (customerDetails[1].get() == '') or (customerDetails[2].get() == '') or (customerDetails[4].get() == '') or (customerDetails[5].get() == '') or (customerDetails[8].get() == '') or (customerDetails[9].get() == ''):
+        message = ""
+        if customerDetails[1].get() == '':
+            message+="\nPlease provide your last name."
+            warning.configure(text=message)
+            
+        if customerDetails[2].get() == '':
+            message+="\nPlease provide your given name."
+            warning.configure(text=message)
+        
+        if customerDetails[4].get() == '':
+            message+="\nPlease select your address."
+            warning.configure(text=message)
+            
+        if customerDetails[5].get() == '':
+            message+="\nPlease provide a city."
+            warning.configure(text=message)
+        
+        if customerDetails[8].get() == '':
+            message+="\nPlease provide your postal code."
+            warning.configure(text=message)
+        
+        if customerDetails[9].get() == '':
+            message+="\nPlease provide your birth date."
+            warning.configure(text=message)
+    else:
+        warning.configure(text="")
+        cur.execute(f"INSERT INTO customer VALUES ({customerDetails[0].cget('text')},'{customerDetails[1].get()}','{customerDetails[2].get()}','{customerDetails[3].get()}','{customerDetails[4].get()}','{customerDetails[5].get()}','{customerDetails[6].get()}','{customerDetails[7].get()}',{customerDetails[8].get()},'{customerDetails[9].get()}');")
+        
+        for a in itemDetails:
+            if a == itemDetails[0]:
+                a.configure(text=int(a.cget("text"))+1)
+            else:
+                a.configure(text="")
     
     print("Integrate sql for adCustomerAction() here")
 
@@ -252,6 +286,7 @@ back.grid(column=2,row=0)
 newCustomerFrameA.grid(column=0,row=0)
 newCustomerFrameB.grid(column=1,row=1)
 regCustomerButton.grid(column=1,row=2)
+warning.grid(column=1,row=3)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -276,35 +311,40 @@ searchLabel.grid(column=0,row=1)
 searchBar = tk.Entry(regCustomerFrameA, width=60, font="Times 18")
 searchBar.grid(column=1,row=1)
 
-def search():        
-    cur.execute(f"SELECT * FROM item WHERE description LIKE '%{searchBar.get()}%'")
+def search():
+    i=0
+    for a in regCustomerFrameB.winfo_children():
+        if i < len(customerAttributes):
+            i+=1
+        else:
+            a.destroy()
+        
+    cur.execute(f"SELECT * FROM customer WHERE last_name LIKE '%{searchBar.get()}%'")
     
     rows = cur.fetchall()
     
-    i = 0
+    i = 1
     for r in rows:
-        customerID = tk.Label(regCustomerFrameB, text=r[0], bg="white", fg="black", font="Times 12", borderwidth=1,relief="solid")
-        customerID.grid(column=i,row=i)
-        lastName = tk.Label(regCustomerFrameB, text=r[1], bg="white", fg="black", font="Times 12", borderwidth=1,relief="solid")
-        lastName.grid(column=i+1,row=i)
-        givenName = tk.Label(regCustomerFrameB, text=r[2], bg="white", fg="black", font="Times 12", borderwidth=1,relief="solid")
-        givenName.grid(column=i+2,row=i)
-        middleInitial = tk.Label(regCustomerFrameB, text=r[3], bg="white", fg="black", font="Times 12", borderwidth=1,relief="solid")
-        middleInitial.grid(column=i+3,row=i)
-        address = tk.Label(regCustomerFrameB, text=r[4], bg="white", fg="black", font="Times 12", borderwidth=1,relief="solid")
-        address.grid(column=i+4,row=i)
-        city = tk.Label(regCustomerFrameB, text=r[5], bg="white", fg="black", font="Times 12", borderwidth=1,relief="solid")
-        city.grid(column=i+5,row=i)
-        mobile = tk.Label(regCustomerFrameB, text=r[6], bg="white", fg="black", font="Times 12", borderwidth=1,relief="solid")
-        mobile.grid(column=i+6,row=i)
-        landline = tk.Label(regCustomerFrameB, text=r[7], bg="white", fg="black", font="Times 12", borderwidth=1,relief="solid")
-        landline.grid(column=i+7,row=i)
-        postalCode = tk.Label(regCustomerFrameB, text=r[8], bg="white", fg="black", font="Times 12", borderwidth=1,relief="solid")
-        postalCode.grid(column=i+8,row=i)
-        birthDate = tk.Label(regCustomerFrameB, text=r[9], bg="white", fg="black", font="Times 12", borderwidth=1,relief="solid")
-        birthDate.grid(column=i+9,row=i)
-        age = tk.Label(regCustomerFrameB, text=r[10], bg="white", fg="black", font="Times 12", borderwidth=1,relief="solid")
-        age.grid(column=i+10,row=i)
+        customerID = tk.Label(regCustomerFrameB, text=r[0], bg="white", fg="black", font="Times 12", wraplength=225)
+        customerID.grid(column=0,row=i)
+        lastName = tk.Label(regCustomerFrameB, text=r[1], bg="white", fg="black", font="Times 12", wraplength=225)
+        lastName.grid(column=1,row=i)
+        givenName = tk.Label(regCustomerFrameB, text=r[2], bg="white", fg="black", font="Times 12", wraplength=225)
+        givenName.grid(column=2,row=i)
+        middleInitial = tk.Label(regCustomerFrameB, text=r[3], bg="white", fg="black", font="Times 12", wraplength=225)
+        middleInitial.grid(column=3,row=i)
+        address = tk.Label(regCustomerFrameB, text=r[4], bg="white", fg="black", font="Times 12", wraplength=225)
+        address.grid(column=4,row=i)
+        city = tk.Label(regCustomerFrameB, text=r[5], bg="white", fg="black", font="Times 12", wraplength=225)
+        city.grid(column=5,row=i)
+        mobile = tk.Label(regCustomerFrameB, text=r[6], bg="white", fg="black", font="Times 12", wraplength=225)
+        mobile.grid(column=6,row=i)
+        landline = tk.Label(regCustomerFrameB, text=r[7], bg="white", fg="black", font="Times 12", wraplength=225)
+        landline.grid(column=7,row=i)
+        postalCode = tk.Label(regCustomerFrameB, text=r[8], bg="white", fg="black", font="Times 12", wraplength=225)
+        postalCode.grid(column=8,row=i)
+        birthDate = tk.Label(regCustomerFrameB, text=r[9], bg="white", fg="black", font="Times 12", wraplength=225)
+        birthDate.grid(column=9,row=i)
         i+=1
     
 
@@ -314,7 +354,7 @@ searchButton.grid(column=2,row=1)
 #labels
 #customerAttributes found in New Customer page
 #customerAttributes = ["Customer ID", "Last Name", "Given Name", "MI", "Address", "City", "Mobile", "Landline", "Postal Code", "Birth Date", "Age"]
-attributeWidths = [10,10,10,5,25,10,10,10,10,10,5]
+attributeWidths = [10,10,10,5,25,12,11,10,10,10,5]
 
 i = 0
 for a in customerAttributes:
