@@ -415,12 +415,6 @@ searchLabel.grid(column=0,row=1)
 searchBar = tk.Entry(processPaymentFrameA, width=20, font="Times 18")
 searchBar.grid(column=1,row=1)
 
-def search():
-	print("nothing here yet")
-
-searchButton = tk.Button(processPaymentFrameA, text="Search and Create Reciept", font="Times 18", bg=bgcolor, fg="black",command=search)
-searchButton.grid(column=2,row=1)
-
 def submit():
 	print("nothing here yet")
 
@@ -452,15 +446,17 @@ for i in range(0,2):
 				label = tk.Label(processPaymentTicketDetailsA, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=17)
 				label.grid(column=j,row=i)
 				recieptDetails.append(label)
+				if (a == 5):
+					break
 
-label = tk.Label(processPaymentAddress, text=recieptAttributes[a], bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
-label.grid(column=0,row=0)
+addressLabel = tk.Label(processPaymentAddress, text=recieptAttributes[a], bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
+addressLabel.grid(column=0,row=0)
 a += 1
-label = tk.Label(processPaymentAddress, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=84)
-label.grid(column=1,row=0)
-recieptDetails.append(label)
+addressLabelDetail = tk.Label(processPaymentAddress, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=84)
+addressLabelDetail.grid(column=1,row=0)
+recieptDetails.append(addressLabelDetail)
 
-for j in range (0,6):
+for j in range (0,4):
 	if (j%2 == 0 and a <= 7):
 		label = tk.Label(processPaymentTicketDetailsB, text=recieptAttributes[a], bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
 		label.grid(column=j,row=0)
@@ -503,6 +499,21 @@ amountPaidLabel.grid(column=4,row=2)
 amountPaid = tk.Entry(processPaymentDue, bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=17)
 amountPaid.grid(column=5,row=2)
 recieptDetailEntry.append(amountPaid)
+
+def search():
+	cur.execute(f"SELECT DISTINCT pt.ticket_no, pt.pawn_date, CONCAT(c.last_name, ', ', c.given_name, ' ', c.middle_initial, '.' ), pt.due_date, CONCAT(c.address, ', ', c.city), c.mobile, c.landline FROM pawn_ticket pt, inventory_tag it, customer c WHERE pt.ticket_no={searchBar.get()} AND pt.ticket_no=it.ticket_no;")
+
+	rows = cur.fetchone()
+
+	a=0
+	for i in recieptDetails:
+		i.configure(text=rows[a])
+		a+=1
+
+	print("nothing here yet")
+
+searchButton = tk.Button(processPaymentFrameA, text="Search and Create Reciept", font="Times 18", bg=bgcolor, fg="black",command=search)
+searchButton.grid(column=2,row=1)
 
 #back
 def goBack():
