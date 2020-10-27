@@ -132,18 +132,33 @@ findItemFrameB.configure(bg=bgcolor)
 title = tk.Label(findItemFrameA, text="Item Registry", bg=bgcolor, fg="black", font="Times 32")
 title.grid(column=1,row=0)
 
+#search result labels
+#itemAttributes found in addAnItem page
+#itemAttributes = ["Item#","Category","Description","Risk Level", "Amount"]
+itemWidth = [10,20,50,10,10]
+
+def constructItemSearchHeaders():
+    for i in range(len(itemAttributes)):
+        label = tk.Label(findItemFrameB, text=itemAttributes[i], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=itemWidth[i])
+        label.grid(column=i,row=0)
+constructItemSearchHeaders()
+
 #search
 searchLabel = tk.Label(findItemFrameA, text="Search item: ", bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid")
 searchLabel.grid(column=0,row=1)
 
-searchBar = tk.Entry(findItemFrameA, width=60, font="Times 18")
+searchTerm = tk.StringVar()
+searchBar = tk.Entry(findItemFrameA, width=60, font="Times 18", textvariable=searchTerm)
 searchBar.grid(column=1,row=1)
 
-def search():        
-    cur.execute(f"SELECT * FROM item WHERE description ILIKE '%{searchBar.get()}%'")
+def search():       
+    query = "SELECT * FROM item WHERE description ILIKE '%{0}%'".format(searchTerm.get())
+    cur.execute(query)
     
     rows = cur.fetchall()
-    
+    for w in findItemFrameB.winfo_children():
+        w.destroy()
+    constructItemSearchHeaders()
     i = 1
     for r in rows:
         itemNum = tk.Label(findItemFrameB, text=r[0], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=10)
@@ -164,17 +179,6 @@ searchButton.grid(column=2,row=1)
 
 findItemFrameB = Frame(findItemFrame)
 findItemFrameB.configure(bg=bgcolor)
-
-#search result labels
-#itemAttributes found in addAnItem page
-#itemAttributes = ["Item#","Category","Description","Risk Level", "Amount"]
-itemWidth = [10,20,50,10,10]
-
-i=0
-for a in itemAttributes:
-    label = tk.Label(findItemFrameB, text=a, bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=itemWidth[i])
-    label.grid(column=i,row=0)
-    i+=1
 
 #back
 def goBack():
