@@ -400,7 +400,7 @@ title.grid(column=1,row=0)
 searchLabel = tk.Label(processPaymentFrameA, text="Search ticket: ", bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid")
 searchLabel.grid(column=0,row=1)
 
-searchBar = tk.Entry(processPaymentFrameA, width=55, font="Times 18")
+searchBar = tk.Entry(processPaymentFrameA, width=45, font="Times 18")
 searchBar.grid(column=1,row=1)
 
 def search():
@@ -409,10 +409,20 @@ def search():
 searchButton = tk.Button(processPaymentFrameA, text="Search and Create Reciept", font="Times 18", bg=bgcolor, fg="black",command=search)
 searchButton.grid(column=2,row=1)
 
-back
+#labels
+recieptAttributes = ["Ticket No: ", "Pawn Date: ", "Payment Date: ", "Customer: ", "Due Date: ", "Address: ", "Mobile", "Landline: "]
+labelWidth = 15
+recieptDetails = []
+recieptDetailEntry = []
+
+label = tk.Label(processPaymentFrameB, text="Reciept", bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=100)
+label.grid(column=0,row=0)
+
+#for attribute in recieptAttributes: 
+
+#back
 def goBack():
     processPaymentFrame.grid_remove()
-    win.geometry(f"{width}x{height}")
     f.grid()
 
 back = tk.Button(processPaymentFrameA, text="Go Back", font="Times 18", bg=bgcolor, fg="black",command=goBack)
@@ -451,7 +461,6 @@ def customer_registry():
 
 def process_payment():
 	f.grid_remove()
-	win.geometry("1080x720")
 	processPaymentFrame.grid()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
