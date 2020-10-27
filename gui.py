@@ -1,7 +1,8 @@
 import tkinter as tk
-from tkinter import Frame, DISABLED, NORMAL
-from connect import cur
-from datetime import date, datetime
+from tkinter import *
+import connect
+from connect import cur, con
+from datetime import date
 
 # creating a window
 win = tk.Tk()
@@ -486,7 +487,198 @@ regCustomerFrameB.grid()
 
 # payment page (labelled "Process a Payement")
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#Process Payment page
+processPaymentFrame = Frame(win)
+processPaymentFrame.configure(bg=bgcolor)
+
+#subframes
+processPaymentFrameA = Frame(processPaymentFrame)
+processPaymentFrameA.configure(bg=bgcolor)
+processPaymentRecieptHeader = Frame(processPaymentFrame)
+processPaymentRecieptHeader.configure(bg=bgcolor)
+processPaymentTicketDetailsA = Frame(processPaymentFrame)
+processPaymentTicketDetailsA.configure(bg=bgcolor)
+processPaymentAddress = Frame(processPaymentFrame)
+processPaymentAddress.configure(bg=bgcolor)
+processPaymentTicketDetailsB = Frame(processPaymentFrame)
+processPaymentTicketDetailsB.configure(bg=bgcolor)
+processPaymentPawnedItemsHeader = Frame(processPaymentFrame)
+processPaymentPawnedItemsHeader.configure(bg=bgcolor)
+processPaymentPawnedItems = Frame(processPaymentFrame)
+processPaymentPawnedItems.configure(bg=bgcolor)
+processPaymentDue = Frame(processPaymentFrame)
+processPaymentDue.configure(bg=bgcolor)
+
+#title
+title = tk.Label(processPaymentFrameA, text="Ticket Registry", bg=bgcolor, fg="black", font="Times 32")
+title.grid(column=1,row=0)
+
+#search
+searchLabel = tk.Label(processPaymentFrameA, text="Search ticket: ", bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid")
+searchLabel.grid(column=0,row=1)
+
+searchBar = tk.Entry(processPaymentFrameA, width=20, font="Times 18")
+searchBar.grid(column=1,row=1)
+
+#labels
+recieptAttributes = ["Ticket No: ", "Pawn Date: ", "Payment Date: ", "Customer: ", "Due Date: ", "Address: ", "Mobile", "Landline: "]
+labelWidth = 15
+recieptDetails = []
+recieptDetailEntry = [] #payment date
+
+recieptHeader = tk.Label(processPaymentRecieptHeader, text="Reciept", bg="black", fg=bgcolor, font="Times 12", borderwidth=1,relief="solid", width=100)
+recieptHeader.grid(column=0,row=0)
+
+a = 0
+for i in range(0,2):
+	for j in range (0,6):
+		if (j%2 == 0 and a <= 4):
+			label = tk.Label(processPaymentTicketDetailsA, text=recieptAttributes[a], bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
+			label.grid(column=j,row=i)
+			a += 1
+		else:
+			if (a == 3):
+				label = tk.Label(processPaymentTicketDetailsA, text=date.today().strftime("%B %d, %Y"), bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=17)
+				label.grid(column=j,row=i)
+				recieptDetailEntry.append(label)
+			else:
+				label = tk.Label(processPaymentTicketDetailsA, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=17)
+				label.grid(column=j,row=i)
+				recieptDetails.append(label)
+				if (a == 5):
+					break
+
+addressLabel = tk.Label(processPaymentAddress, text=recieptAttributes[a], bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
+addressLabel.grid(column=0,row=0)
+a += 1
+addressLabelDetail = tk.Label(processPaymentAddress, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=84)
+addressLabelDetail.grid(column=1,row=0)
+recieptDetails.append(addressLabelDetail)
+
+for j in range (0,4):
+	if (j%2 == 0 and a <= 7):
+		label = tk.Label(processPaymentTicketDetailsB, text=recieptAttributes[a], bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
+		label.grid(column=j,row=0)
+		a += 1
+	else:
+		label = tk.Label(processPaymentTicketDetailsB, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=17)
+		label.grid(column=j,row=0)
+		recieptDetails.append(label)
+
+itemsHeader = tk.Label(processPaymentPawnedItemsHeader, text="Items", bg="gray", fg=bgcolor, font="Times 12", borderwidth=0,relief="solid", width=100)
+itemsHeader.grid(column=0,row=0)
+
+pawnedItemAttributes = ["Category","Description","Loan Amount","Rate", "Interest"]
+pawnedItemWidth = [20,35,15,15,15]
+
+a=0
+for i in pawnedItemAttributes:
+    label = tk.Label(processPaymentPawnedItems, text=i, bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=pawnedItemWidth[a])
+    label.grid(column=a,row=0)
+    a+=1
+
+noItemsLabel = tk.Label(processPaymentDue, text="# of items: ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
+noItemsLabel.grid(column=0,row=0)
+noItems = tk.Label(processPaymentDue, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=17)
+noItems.grid(column=1,row=0)
+
+recieptPaymentDue = ["Total Loan: ", "Service Charge: ", "Total Amount Due: "]
+recieptPaymentDueDetails = []
+a=0
+for i in recieptPaymentDue:
+	label = tk.Label(processPaymentDue, text=i, bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
+	label.grid(column=2,row=a)
+	label = tk.Label(processPaymentDue, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=17)
+	label.grid(column=3,row=a)
+	recieptPaymentDueDetails.append(label)
+	a += 1
+
+amountPaidLabel = tk.Label(processPaymentDue, text="Amount Paid: ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
+amountPaidLabel.grid(column=4,row=2)
+amountPaid = tk.Entry(processPaymentDue, bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=17)
+amountPaid.grid(column=5,row=2)
+
+def search():
+	try:
+		int(searchBar.get())
+	except Exception:
+		searchBar.configure(text="Enter A Ticket Number")
+		return
+
+	cur.execute(f"SELECT DISTINCT pt.ticket_no, pt.pawn_date, CONCAT(c.last_name, ', ', c.given_name, ' ', c.middle_initial, '.' ), pt.due_date, CONCAT(c.address, ', ', c.city), c.mobile, c.landline FROM pawn_ticket pt, inventory_tag it, customer c WHERE pt.ticket_no={searchBar.get()} AND pt.ticket_no=it.ticket_no;")
+	rows = cur.fetchone()
+
+	if(str(rows) == "None"):
+		searchBar.configure(text="Cannot Find Ticket")
+		return
+
+	a=0
+	for i in recieptDetails:
+		i.configure(text=rows[a])
+		a+=1
+
+	cur.execute(f"SELECT DISTINCT i.category, i.description, i.amount, r.interest_rate, (i.amount * r.interest_rate) FROM pawn_ticket pt, inventory_tag it, item i, risk r WHERE pt.ticket_no={searchBar.get()} AND pt.ticket_no=it.ticket_no AND it.item_no=i.item_no AND i.risk_level=r.risk_level;")
+	rows = cur.fetchall()
+
+	a=1
+	for i in rows:
+		itemCategory = tk.Label(processPaymentPawnedItems, text=i[0], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=20)
+		itemCategory.grid(column=0,row=a)
+		itemDescription = tk.Label(processPaymentPawnedItems, text=i[1], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=35)
+		itemDescription.grid(column=1,row=a)
+		itemAmount = tk.Label(processPaymentPawnedItems, text=i[2], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=15)
+		itemAmount.grid(column=2,row=a)
+		itemInterestRate = tk.Label(processPaymentPawnedItems, text=i[3], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=15)
+		itemInterestRate.grid(column=3,row=a)
+		itemInterest = tk.Label(processPaymentPawnedItems, text=round(i[4], 2), bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=15)
+		itemInterest.grid(column=4,row=a)
+		a+=1
+
+	cur.execute(f"SELECT COUNT(DISTINCT i.item_no), SUM(DISTINCT (i.amount * (r.interest_rate + 1))), SUM(DISTINCT (i.amount * (r.interest_rate + 1))*0.15), SUM(DISTINCT (i.amount * (r.interest_rate + 1))*1.15) FROM pawn_ticket pt, inventory_tag it, item i, risk r WHERE pt.ticket_no={searchBar.get()} AND pt.ticket_no=it.ticket_no AND it.item_no=i.item_no AND i.risk_level=r.risk_level;")
+	rows = cur.fetchone()
+
+	noItems.configure(text=rows[0])
+
+	a=1
+	for i in recieptPaymentDueDetails:
+		i.configure(text=round(rows[a], 2))
+		a+=1
+
+searchButton = tk.Button(processPaymentFrameA, text="Search and Create Reciept", font="Times 18", bg=bgcolor, fg="black",command=search)
+searchButton.grid(column=2,row=1)
+
+def submit():
+	print(recieptDetails[0].cget('text'))
+	if (recieptDetails[0].cget('text') == " "):
+		searchBar.configure(text="No Ticket Loaded")
+		return
+
+	cur.execute(f"UPDATE pawn_ticket pt SET payment_date='{date.today().isoformat()}' WHERE pt.ticket_no = {recieptDetails[0].cget('text')}")
+	con.commit()
+
+
+submitButton = tk.Button(processPaymentFrameA, text="Submit Reciept", font="Times 18", bg=bgcolor, fg="black",command=submit)
+submitButton.grid(column=3,row=1)
+
+#back
+def goBack():
+    processPaymentFrame.grid_remove()
+    f.grid()
+
+back = tk.Button(processPaymentFrameA, text="Go Back", font="Times 18", bg=bgcolor, fg="black",command=goBack)
+back.grid(column=2,row=0)
+
+processPaymentFrameA.grid()
+processPaymentRecieptHeader.grid()
+processPaymentTicketDetailsA.grid()
+processPaymentAddress.grid()
+processPaymentTicketDetailsB.grid()
+processPaymentPawnedItemsHeader.grid()
+processPaymentPawnedItems.grid()
+processPaymentDue.grid()
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 # extend page (labelled "Extend a Loan")
 
@@ -614,15 +806,11 @@ def new_customer():
 def customer_registry():
     f.grid_remove()
     win.geometry("1080x720")
-    regCustomerFrame.grid()
+    regCustomerFrame.grid()  
 
-
-def check_expired():
-    f.grid_remove()
-    expiredItemFrame.grid()
-    list_expired()
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def process_payment():
+	f.grid_remove()
+	processPaymentFrame.grid()
 
 
 # title label
@@ -665,8 +853,9 @@ for a in list(cur):
 inventoryTag.configure(command=item_registry)
 newCustomer.grid(column=1)
 
-# business processes
-payment.configure(command=item_registry)
+#business processes
+#process payment
+payment.configure(command=process_payment)
 payment.grid(column=1)
 
 extend.configure(command=item_registry)
