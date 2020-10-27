@@ -404,6 +404,7 @@ searchBar = tk.Entry(processPaymentFrameA, width=60, font="Times 18")
 searchBar.grid(column=1,row=1)
 
 def search():
+	print("nothing here yet")
 
 searchButton = tk.Button(processPaymentFrameA, text="Search", font="Times 18", bg=bgcolor, fg="black",command=search)
 searchButton.grid(column=2,row=1)
@@ -450,7 +451,7 @@ def customer_registry():
 
 def process_payment():
 	f.grid_remove()
-    processPaymentFrame.grid()
+	processPaymentFrame.grid()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
