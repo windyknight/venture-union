@@ -481,7 +481,7 @@ for i in pawnedItemAttributes:
 noItemsLabel = tk.Label(processPaymentDue, text="# of items: ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
 noItemsLabel.grid(column=0,row=0)
 noItems = tk.Label(processPaymentDue, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=17)
-noItemsLabel.grid(column=1,row=0)
+noItems.grid(column=1,row=0)
 
 recieptPaymentDue = ["Total Loan: ", "Service Charge: ", "Total Amount Due: "]
 recieptPaymentDueDetails = []
@@ -502,7 +502,6 @@ recieptDetailEntry.append(amountPaid)
 
 def search():
 	cur.execute(f"SELECT DISTINCT pt.ticket_no, pt.pawn_date, CONCAT(c.last_name, ', ', c.given_name, ' ', c.middle_initial, '.' ), pt.due_date, CONCAT(c.address, ', ', c.city), c.mobile, c.landline FROM pawn_ticket pt, inventory_tag it, customer c WHERE pt.ticket_no={searchBar.get()} AND pt.ticket_no=it.ticket_no;")
-
 	rows = cur.fetchone()
 
 	a=0
@@ -510,7 +509,33 @@ def search():
 		i.configure(text=rows[a])
 		a+=1
 
-	print("nothing here yet")
+	cur.execute(f"SELECT DISTINCT i.category, i.description, i.amount, r.interest_rate, (i.amount * r.interest_rate) FROM pawn_ticket pt, inventory_tag it, item i, risk r WHERE pt.ticket_no={searchBar.get()} AND pt.ticket_no=it.ticket_no AND it.item_no=i.item_no AND i.risk_level=r.risk_level;")
+	rows = cur.fetchall()
+
+	a=1
+	for i in rows:
+		itemCategory = tk.Label(processPaymentPawnedItems, text=i[0], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=20)
+		itemCategory.grid(column=0,row=a)
+		itemDescription = tk.Label(processPaymentPawnedItems, text=i[1], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=35)
+		itemDescription.grid(column=1,row=a)
+		itemAmount = tk.Label(processPaymentPawnedItems, text=i[2], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=15)
+		itemAmount.grid(column=2,row=a)
+		itemInterestRate = tk.Label(processPaymentPawnedItems, text=i[3], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=15)
+		itemInterestRate.grid(column=3,row=a)
+		itemInterest = tk.Label(processPaymentPawnedItems, text=i[4], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=15)
+		itemInterest.grid(column=4,row=a)
+		a+=1
+
+	cur.execute(f"SELECT COUNT(DISTINCT i.item_no), SUM(DISTINCT (i.amount * (r.interest_rate + 1))), SUM(DISTINCT (i.amount * (r.interest_rate + 1))*0.15), SUM(DISTINCT (i.amount * (r.interest_rate + 1))*1.15) FROM pawn_ticket pt, inventory_tag it, item i, risk r WHERE pt.ticket_no={searchBar.get()} AND pt.ticket_no=it.ticket_no AND it.item_no=i.item_no AND i.risk_level=r.risk_level;")
+	rows = cur.fetchone()
+
+	noItems.configure(text=rows[0])
+
+	a=1
+	for i in recieptPaymentDueDetails:
+		i.configure(text=rows[a])
+		a+=1
+
 
 searchButton = tk.Button(processPaymentFrameA, text="Search and Create Reciept", font="Times 18", bg=bgcolor, fg="black",command=search)
 searchButton.grid(column=2,row=1)
