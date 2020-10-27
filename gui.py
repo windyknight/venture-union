@@ -188,7 +188,7 @@ searchBar = tk.Entry(findItemFrameA, width=60,
 searchBar.grid(column=1, row=1)
 
 
-def search():
+def itemSearch():
     query = "SELECT * FROM item WHERE description ILIKE '%{0}%'".format(
         searchTerm.get())
     cur.execute(query)
@@ -224,7 +224,7 @@ def search():
 
 searchButton = tk.Button(findItemFrameA, text="Search",
                          font="Times 18", bg=bgcolor, fg="black",
-                         command=search)
+                         command=itemSearch)
 searchButton.grid(column=2, row=1)
 
 findItemFrameB = Frame(findItemFrame)
@@ -398,7 +398,7 @@ searchBar = tk.Entry(regCustomerFrameA, width=60, font="Times 18")
 searchBar.grid(column=1, row=1)
 
 
-def search():
+def customerSearch():
     # erase previous searches
     i = 0
     for a in regCustomerFrameB.winfo_children():
@@ -461,7 +461,7 @@ def search():
 
 searchButton = tk.Button(regCustomerFrameA, text="Search",
                          font="Times 18", bg=bgcolor, fg="black",
-                         command=search)
+                         command=customerSearch)
 searchButton.grid(column=2, row=1)
 
 # labels
