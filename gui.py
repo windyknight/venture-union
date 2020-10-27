@@ -409,7 +409,7 @@ def customerSearch():
 
     # create results for current search
     cur.execute(
-        f"SELECT * FROM customer WHERE last_name ILIKE '%{searchBar.get()}%'")
+        f"SELECT *, CAST((CAST(TO_CHAR(CURRENT_DATE, 'YYYYMMDD') AS INT) - CAST(TO_CHAR(birth_date, 'YYYYMMDD') AS INT)) AS INT)/10000 \"Age\" FROM customer WHERE last_name ILIKE '%{searchBar.get()}%' OR given_name ILIKE '%{searchBar.get()}%'")
 
     rows = cur.fetchall()
 
@@ -456,7 +456,15 @@ def customerSearch():
             regCustomerFrameB, text=r[9], bg="white", fg="black",
             font="Times 12", wraplength=225)
         birthDate.grid(column=9, row=i)
+        age = tk.Label(
+            regCustomerFrameB, text=r[10], bg="white", fg="black",
+            font="Times 12", wraplength=255)
+        age.grid(column=10, row=i)
         i += 1
+
+
+def customerInfo():
+    print('Customer info')
 
 
 searchButton = tk.Button(regCustomerFrameA, text="Search",
@@ -466,9 +474,10 @@ searchButton.grid(column=2, row=1)
 
 # labels
 # customerAttributes found in New Customer page
-# customerAttributes = ["Customer ID", "Last Name", "Given Name", "MI",
-# "Address", "City", "Mobile", "Landline", "Postal Code", "Birth Date", "Age"]
-attributeWidths = [10, 10, 10, 5, 25, 12, 11, 10, 10, 10, 5]
+customerAttributes = [
+    "Customer ID", "Last Name", "Given Name", "MI", "Address", "City",
+    "Mobile", "Landline", "Postal Code", "Birth Date", "Age"]
+attributeWidths = [10, 10, 10, 5, 25, 12, 11, 10, 10, 10, 5, 5]
 
 i = 0
 for a in customerAttributes:
@@ -481,6 +490,14 @@ for a in customerAttributes:
 
 # back
 def goBack():
+    # erase previous searches
+    i = 0
+    for a in regCustomerFrameB.winfo_children():
+        if i < len(customerAttributes):
+            i += 1
+        else:
+            a.destroy()
+
     regCustomerFrame.grid_remove()
     win.geometry(f"{width}x{height}")
     f.grid()
@@ -624,7 +641,7 @@ def new_customer():
 
 def customer_registry():
     f.grid_remove()
-    win.geometry("1080x720")
+    win.geometry("1200x720")
     regCustomerFrame.grid()
 
 
