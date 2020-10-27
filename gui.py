@@ -400,7 +400,7 @@ title.grid(column=1,row=0)
 searchLabel = tk.Label(processPaymentFrameA, text="Search ticket: ", bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid")
 searchLabel.grid(column=0,row=1)
 
-searchBar = tk.Entry(processPaymentFrameA, width=60, font="Times 18")
+searchBar = tk.Entry(processPaymentFrameA, width=55, font="Times 18")
 searchBar.grid(column=1,row=1)
 
 def search():
@@ -451,6 +451,7 @@ def customer_registry():
 
 def process_payment():
 	f.grid_remove()
+	win.geometry("1080x720")
 	processPaymentFrame.grid()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
