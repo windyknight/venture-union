@@ -406,7 +406,7 @@ searchBar.grid(column=1,row=1)
 def search():
 	print("nothing here yet")
 
-searchButton = tk.Button(processPaymentFrameA, text="Search", font="Times 18", bg=bgcolor, fg="black",command=search)
+searchButton = tk.Button(processPaymentFrameA, text="Search and Create Reciept", font="Times 18", bg=bgcolor, fg="black",command=search)
 searchButton.grid(column=2,row=1)
 
 back
