@@ -15,6 +15,9 @@ CREATE TABLE customer(
   landline        VARCHAR(25),
   postal_code     INT NOT NULL,
   birth_date      DATE NOT NULL
+  -- age             INT GENERATED ALWAYS AS (CAST((
+  --   CAST(TO_CHAR(CURRENT_DATE, 'YYYYMMDD') AS INT) - CAST(TO_CHAR(birth_date, 'YYYYMMDD') AS INT)
+  -- ) AS INT)/10000) STORED
 );
 
 CREATE TYPE risk_levels AS ENUM('Low', 'Medium', 'High', 'Very High');
