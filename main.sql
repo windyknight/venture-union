@@ -39,7 +39,7 @@ CREATE TABLE pawn_ticket(
   ticket_no     INT NOT NULL UNIQUE PRIMARY KEY,
   customer_id   INT NOT NULL,
   pawn_date     DATE NOT NULL DEFAULT CURRENT_DATE,
-  due_date      DATE GENERATED ALWAYS AS (pawn_date + interval '1 month') STORED,
+  due_date      DATE NOT NULL DEFAULT (CURRENT_DATE + interval '1 month'),
   payment_date  DATE,
   FOREIGN KEY (customer_id) REFERENCES customer(customer_id) ON DELETE RESTRICT
 );
