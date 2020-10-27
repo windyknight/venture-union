@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import Frame, DISABLED, NORMAL
 from connect import cur
+from datetime import date, datetime
 
 # creating a window
 win = tk.Tk()
@@ -496,6 +497,102 @@ regCustomerFrameB.grid()
 
 # expire page (labelled "Report Expired Inventory")
 
+expiredItemFrame = Frame(win)
+expiredItemFrame.configure(bg=bgcolor)
+
+expiredItemFrameA = Frame(expiredItemFrame)
+expiredItemFrameA.configure(bg=bgcolor)
+expiredItemFrameB = Frame(expiredItemFrame)
+expiredItemFrameB.configure(bg=bgcolor)
+
+# title
+title = tk.Label(expiredItemFrameA, text="Expired Inventory Report",
+                 bg=bgcolor, fg="black", font="Times 32")
+title.grid(column=0, row=0)
+
+# current date and time
+date = tk.Label(expiredItemFrameA, text=date.today().strftime("%B %d, %Y"),
+                bg=bgcolor, fg="black", font="Times 18")
+date.grid(column=0, row=1)
+time = tk.Label(expiredItemFrameA, text=datetime.now().strftime("%I:%M %p"),
+                bg=bgcolor, fg="black", font="Times 18")
+time.grid(column=1, row=1)
+
+
+def list_expired():
+    cur.execute(
+        "SELECT i.item_no, i.category, i.description, p.due_date, i.amount, "
+        "r.interest_rate FROM item i, pawn_ticket p, risk r, inventory_tag t "
+        "WHERE i.item_no=t.item_no AND t.ticket_no=p.ticket_no AND "
+        "i.risk_level=r.risk_level AND p.due_date <= CURRENT_DATE;")
+
+    rows = cur.fetchall()
+
+    i = 1
+    for r in rows:
+        itemNum = tk.Label(expiredItemFrameB, text=r[0], bg=bgcolor,
+                           fg="black", font="Times 12", borderwidth=1,
+                           relief="solid", width=10)
+        itemNum.grid(column=0, row=i)
+        category = tk.Label(expiredItemFrameB, text=r[1], bg=bgcolor,
+                            fg="black", font="Times 12", borderwidth=1,
+                            relief="solid", width=20)
+        category.grid(column=1, row=i)
+        description = tk.Label(expiredItemFrameB, text=r[2], bg=bgcolor,
+                               fg="black", font="Times 12", borderwidth=1,
+                               relief="solid", width=40)
+        description.grid(column=2, row=i)
+        dueDate = tk.Label(expiredItemFrameB, text=r[3], bg=bgcolor,
+                           fg="black", font="Times 12", borderwidth=1,
+                           relief="solid", width=10)
+        dueDate.grid(column=3, row=i)
+        amount = tk.Label(expiredItemFrameB, text=r[4], bg=bgcolor, fg="black",
+                          font="Times 12", borderwidth=1, relief="solid",
+                          width=10)
+        amount.grid(column=4, row=i)
+        rate = tk.Label(expiredItemFrameB, text=r[5], bg=bgcolor, fg="black",
+                        font="Times 12", borderwidth=1, relief="solid",
+                        width=10)
+        rate.grid(column=5, row=i)
+        i += 1
+
+
+expiredItemFrameB = Frame(expiredItemFrame)
+expiredItemFrameB.configure(bg=bgcolor)
+
+expiredAttributes = ["Item#", "Category", "Description", "Due Date", "Amount",
+                     "Rate"]
+expiredWidth = [10, 20, 40, 10, 10, 10]
+
+i = 0
+for a in expiredAttributes:
+    label = tk.Label(expiredItemFrameB, text=a, bg=bgcolor, fg="black",
+                     font="Times 12", borderwidth=1, relief="solid",
+                     width=expiredWidth[i])
+    label.grid(column=i, row=0)
+    i += 1
+
+
+# back
+def goBack():
+    i = 0
+    for a in expiredItemFrameB.winfo_children():
+        if i < len(expiredAttributes):
+            i += 1
+        else:
+            a.destroy()
+
+    expiredItemFrame.grid_remove()
+    f.grid()
+
+
+back = tk.Button(expiredItemFrameA, text="Go Back", font="Times 18",
+                 bg=bgcolor, fg="black", command=goBack)
+back.grid(column=1, row=0)
+
+expiredItemFrameA.grid()
+expiredItemFrameB.grid()
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # functions for moving from main to other pages
@@ -520,6 +617,12 @@ def customer_registry():
     f.grid_remove()
     win.geometry("1080x720")
     regCustomerFrame.grid()
+
+
+def check_expired():
+    f.grid_remove()
+    expiredItemFrame.grid()
+    list_expired()
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -571,7 +674,7 @@ payment.grid(column=1)
 extend.configure(command=item_registry)
 extend.grid(column=1)
 
-expire.configure(command=item_registry)
+expire.configure(command=check_expired)
 expire.grid(column=1)
 
 f.grid()
