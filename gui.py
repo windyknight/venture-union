@@ -324,12 +324,9 @@ def search():
     #create results for current search   
     cur.execute(f"SELECT * FROM customer WHERE last_name ILIKE '%{searchBar.get()}%'")
     
-    rows = cur.fetchall()
-    
     i = 1
-    for r in rows:
-        
-        customerID = tk.Button(regCustomerFrameB, text=r[0], bg="white", fg="black", font="Times 12", wraplength=225, command=customerInfo)
+    for r in cur.fetchall():
+        customerID = tk.Label(regCustomerFrameB, text=r[0], bg="white", fg="black", font="Times 12", wraplength=225)
         customerID.grid(column=0,row=i)
         lastName = tk.Label(regCustomerFrameB, text=r[1], bg="white", fg="black", font="Times 12", wraplength=225)
         lastName.grid(column=1,row=i)
@@ -349,6 +346,41 @@ def search():
         postalCode.grid(column=8,row=i)
         birthDate = tk.Label(regCustomerFrameB, text=r[9], bg="white", fg="black", font="Times 12", wraplength=225)
         birthDate.grid(column=9,row=i)
+        
+        def addPawnAction(j):
+            print("addPawnAction() "+j)
+            
+        def viewActivePawnsAction(j):
+            regCustomerFrameB.grid_remove()
+            
+            viewActivePawnsFrame = Frame(regCustomerFrame)
+            activePawnsLabels = ["Category", "Description", "Amount", "Due Date"]
+            
+            i=0
+            for a in activePawnsLabels:
+                label = tk.Label(regCustomerFrameB, text=a, bg="white", fg="black", font="Times 12")
+                label.grid(column=i,row=0)
+                i+=1
+            
+            cur.execute(f"SELECT item.category, item.description, item.amount, pawn_ticket.due_date FROM item, pawn_ticket, inventory_tag WHERE inventory_tag.ticket_no=pawn_ticket.ticket_no AND item.item_no=inventory_tag.item_no AND payment_date = NULL AND pawn_ticket.customer_id = {j}")
+            for e in cur.fetchall():
+                i = 0
+                j = 0
+                for a in e:
+                    
+            viewActivePawnsFrame.grid(column=1,row=1)
+            
+        def viewHistoryAction(j):
+            print(j)
+        
+        #buttons
+        addPawn = tk.Button(regCustomerFrameB, text="Add Pawn", font="Times 12", bg=bgcolor, fg="black",command= lambda j=r[0]: addPawnAction(j))
+        addPawn.grid(column=10,row=i)
+        viewActivePawns = tk.Button(regCustomerFrameB, text="View Active Pawns", font="Times 12", bg=bgcolor, fg="black",command=lambda j=r[0]: viewActivePawnsAction(j))
+        viewActivePawns.grid(column=11,row=i)
+        viewHistory = tk.Button(regCustomerFrameB, text="View History", font="Times 12", bg=bgcolor, fg="black",command=lambda j=r[0]: viewHistoryAction(j))
+        viewHistory.grid(column=12,row=i)
+        
         i+=1
     
 
@@ -407,7 +439,7 @@ def new_customer():
     
 def customer_registry():
     f.grid_remove()
-    win.geometry("1080x720")
+    win.geometry("1480x720")
     regCustomerFrame.grid()    
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
