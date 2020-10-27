@@ -70,35 +70,39 @@ for a in itemAttributes:
         itemDetails.append(entryField)
     i+=1
 
-print(len(itemDetails))
-
 #button
+
+warning = tk.Label(addItemFrameA, text="", bg=bgcolor, fg="red", font="Times 12", width=labelWidth)
 def addItemAction():
     #checking for null
-    warning = tk.Label(addItemFrameA, text="", bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid", width=labelWidth)
-    if (itemDetails[1] == '') or (itemDetails[3] != '') or (itemDetails[4] != ''):
-        if itemDetails[1] == '':
-            warning.configure(text=text+"\nPlease provide a category.")
-        
-        if itemDetails[3] == '':
-            warning.configure(text=text+"\nPlease select a risk level.")
-            
-        if itemDetails[4] == '':
-            warning.configure(text=text+"\nPlease provide an amount.")
-        
-        warning.grid(column=1,row=3)
-    else:   
-        cur.execute(f"INSERT INTO item VALUES ({itemDetails[0].cget('text')},'{itemDetails[1].get()}','{itemDetails[2].get()}','{itemDetails[3].get()}',{itemDetails[4].get()});")
-        
-        for a in itemDetails:
-            a.delete(0,'end')
     
-    print("Integrate sql for addItemAction() here")
+    if (itemDetails[1].get() == '') or (itemDetails[3].get() == '') or (itemDetails[4].get() == ''):
+        message = ""
+        if itemDetails[1].get() == '':
+            message+="\nPlease provide a category."
+            warning.configure(text=message)
+        
+        if itemDetails[3].get() == '':
+            message+="\nPlease select a risk level."
+            warning.configure(text=message)
+            
+        if itemDetails[4].get() == '':
+            message+="\nPlease provide an amount."
+            warning.configure(text=message)
+            
+    else:
+        warning.configure(text="")
+        cur.execute(f"INSERT INTO item VALUES ({itemDetails[0].cget('text')},'{itemDetails[1].get()}','{itemDetails[2].get()}','{itemDetails[3].get()}',{itemDetails[4].get()});")
+        for a in itemDetails:
+            if a == itemDetails[0]:
+                a.configure(text=int(a.cget("text"))+1)
+            else:
+                a.configure(text="")
+                
     findAnItem.configure(state=NORMAL)
     
 
 addItemButton = tk.Button(addItemFrameA, text="Add Item", font="Times 18", bg=bgcolor, fg="black",command=addItemAction)
-
 
 #back
 def goBack():
@@ -111,6 +115,7 @@ back.grid(column=2,row=0)
 addItemFrameA.grid(column=0,row=0)
 addItemFrameB.grid(column=1,row=1)
 addItemButton.grid(column=1,row=2)
+warning.grid(column=1,row=3)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -120,6 +125,8 @@ findItemFrame.configure(bg=bgcolor)
 
 findItemFrameA = Frame(findItemFrame)
 findItemFrameA.configure(bg=bgcolor)
+findItemFrameB = Frame(findItemFrame)
+findItemFrameB.configure(bg=bgcolor)
 
 #title
 title = tk.Label(findItemFrameA, text="Item Registry", bg=bgcolor, fg="black", font="Times 32")
@@ -137,17 +144,19 @@ def search():
     
     rows = cur.fetchall()
     
+    i = 1
     for r in rows:
-        itemNum = tk.Label(b, text="Item#", bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=10)
-        itemNum.grid(column=0,row=0)
-        category = tk.Label(b, text="Category", bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=20)
-        category.grid(column=1,row=0)
-        description = tk.Label(b, text="Description", bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=50)
-        description.grid(column=2,row=0)
-        risk = tk.Label(b, text="Risk Level", bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=10)
-        risk.grid(column=3,row=0)
-        amount = tk.Label(b, text="Amount", bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=10)
-        amount.grid(column=4,row=0)
+        itemNum = tk.Label(findItemFrameB, text=r[0], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=10)
+        itemNum.grid(column=0,row=i)
+        category = tk.Label(findItemFrameB, text=r[1], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=20)
+        category.grid(column=1,row=i)
+        description = tk.Label(findItemFrameB, text=r[2], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=50)
+        description.grid(column=2,row=i)
+        risk = tk.Label(findItemFrameB, text=r[3], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=10)
+        risk.grid(column=3,row=i)
+        amount = tk.Label(findItemFrameB, text=r[4], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=10)
+        amount.grid(column=4,row=i)
+        i+=1
     
 
 searchButton = tk.Button(findItemFrameA, text="Search", font="Times 18", bg=bgcolor, fg="black",command=search)
@@ -362,8 +371,11 @@ findAnItem.grid(column=1)
 #itemNum found in addAnItem page
 #itemNum = cur.execute("SELECT COUNT(*) FROM item;")
 
-if itemNum == 0:
-    findAnItem.configure(state=DISABLED)
+cur.execute("SELECT COUNT(*) FROM item")
+for a in list(cur):
+    if a[0] == 0:
+        findAnItem.configure(state=DISABLED)
+        break;
 
 #loan computation and releasing
 newCustomer.configure(command=new_customer)
@@ -372,8 +384,11 @@ newCustomer.grid(column=1)
 findCustomer.configure(command=customer_registry)
 findCustomer.grid(column=1)
 
-if str(cur.execute("SELECT COUNT(*) FROM customer")) == "None":
-    findCustomer.configure(state=DISABLED)
+cur.execute("SELECT COUNT(*) FROM customer")
+for a in list(cur):
+    if a[0] == 0:
+        findCustomer.configure(state=DISABLED)
+        break;
 
 #inventory management
 inventoryTag.configure(command=item_registry)
