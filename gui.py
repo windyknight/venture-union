@@ -340,14 +340,11 @@ def addCustomerAction():
             f"'{customerDetails[5].get()}','{customerDetails[6].get()}',"
             f"'{customerDetails[7].get()}',{customerDetails[8].get()},"
             f"'{customerDetails[9].get()}');")
-
-        for a in itemDetails:
-            if a == itemDetails[0]:
+        for a in customerDetails:
+            if a == customerDetails[0]:
                 a.configure(text=int(a.cget("text"))+1)
             else:
                 a.configure(text="")
-
-    print("Integrate sql for adCustomerAction() here")
 
 
 regCustomerButton = tk.Button(newCustomerFrameA, text="Add Customer",
