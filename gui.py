@@ -418,7 +418,8 @@ def customerSearch():
 
         customerID = tk.Button(
             regCustomerFrameB, text=r[0], bg="white", fg="black",
-            font="Times 12", wraplength=225, command=customerInfo)
+            font="Times 12", wraplength=225,
+            command=lambda: customerInfo(r[0]))
         customerID.grid(column=0, row=i)
         lastName = tk.Label(
             regCustomerFrameB, text=r[1], bg="white", fg="black",
@@ -463,8 +464,18 @@ def customerSearch():
         i += 1
 
 
-def customerInfo():
-    print('Customer info')
+def customerInfo(id):
+    i = 0
+    for a in regCustomerFrameB.winfo_children():
+        if i < len(customerAttributes):
+            i += 1
+        else:
+            a.destroy()
+
+    regCustomerFrame.grid_remove()
+    win.geometry(f"{width}x{height}")
+    customerInfoFrame.grid()
+    populate_frame(id)
 
 
 searchButton = tk.Button(regCustomerFrameA, text="Search",
@@ -509,6 +520,164 @@ back.grid(column=2, row=0)
 
 regCustomerFrameA.grid()
 regCustomerFrameB.grid()
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Customer information
+
+customerInfoFrame = Frame(win)
+customerInfoFrame.configure(bg=bgcolor)
+
+
+def populate_frame(id):
+    customerInfoFrameA = Frame(customerInfoFrame)
+    customerInfoFrameA.configure(bg="black")
+    customerInfoFrameB = Frame(customerInfoFrame)
+    customerInfoFrameB.configure(bg=bgcolor)
+    customerInfoFrameC = Frame(customerInfoFrame)
+    customerInfoFrameC.configure(bg=bgcolor)
+
+    title = tk.Label(customerInfoFrameA, text="Customer Information",
+                     bg="black", fg="white", font="Times 32")
+    title.grid(column=0, row=0)
+
+    def goBack():
+        for a in customerInfoFrame.winfo_children():
+            a.destroy()
+        customerInfoFrame.grid_remove()
+        win.geometry("1200x720")
+        regCustomerFrame.grid()
+
+    back = tk.Button(customerInfoFrameA, text="Go Back",
+                     font="Times 18", bg=bgcolor, fg="black", command=goBack)
+    back.grid(column=1, row=0)
+
+    cur.execute(
+        f"SELECT *, CAST((CAST(TO_CHAR(CURRENT_DATE, 'YYYYMMDD') AS INT) - "
+        f"CAST(TO_CHAR(birth_date, 'YYYYMMDD') AS INT)) AS INT)/10000 \"Age\" "
+        f"FROM customer WHERE customer_id={id}")
+
+    info = cur.fetchone()
+
+    label = tk.Label(customerInfoFrameB, text="Customer ID:", bg="white",
+                     fg="black", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="e")
+    label.grid(column=0, row=0)
+    label = tk.Label(customerInfoFrameB, text=info[0], bg="white",
+                     fg="blue", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="w")
+    label.grid(column=1, row=0)
+
+    label = tk.Label(customerInfoFrameB, text="Last Name:", bg="white",
+                     fg="black", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="e")
+    label.grid(column=0, row=1)
+    label = tk.Label(customerInfoFrameB, text=info[1], bg="white",
+                     fg="blue", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="w")
+    label.grid(column=1, row=1)
+    label = tk.Label(customerInfoFrameB, text="Given Name:", bg="white",
+                     fg="black", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="e")
+    label.grid(column=2, row=1)
+    label = tk.Label(customerInfoFrameB, text=info[2], bg="white",
+                     fg="blue", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="w")
+    label.grid(column=3, row=1)
+    label = tk.Label(customerInfoFrameB, text="Middle Initial:", bg="white",
+                     fg="black", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="e")
+    label.grid(column=4, row=1)
+    label = tk.Label(customerInfoFrameB, text=info[3], bg="white",
+                     fg="blue", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="w")
+    label.grid(column=5, row=1)
+
+    label = tk.Label(customerInfoFrameB, text="Address:", bg="white",
+                     fg="black", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="e")
+    label.grid(column=0, row=2)
+    label = tk.Label(customerInfoFrameB, text=info[4], bg="white",
+                     fg="blue", font="Times 12", borderwidth=0,
+                     relief="solid", width=45, anchor="w")
+    label.grid(column=1, row=2, columnspan=3)
+    label = tk.Label(customerInfoFrameB, text="City:", bg="white", fg="black",
+                     font="Times 12", borderwidth=0, relief="solid", width=15,
+                     anchor="e")
+    label.grid(column=4, row=2)
+    label = tk.Label(customerInfoFrameB, text=info[5], bg="white",
+                     fg="blue", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="w")
+    label.grid(column=5, row=2)
+
+    label = tk.Label(customerInfoFrameB, text="Mobile:", bg="white",
+                     fg="black", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="e")
+    label.grid(column=0, row=3)
+    label = tk.Label(customerInfoFrameB, text=info[6], bg="white",
+                     fg="blue", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="w")
+    label.grid(column=1, row=3)
+    label = tk.Label(customerInfoFrameB, text="Landline:", bg="white",
+                     fg="black", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="e")
+    label.grid(column=2, row=3)
+    label = tk.Label(customerInfoFrameB, text=info[7], bg="white",
+                     fg="blue", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="w")
+    label.grid(column=3, row=3)
+    label = tk.Label(customerInfoFrameB, text="Postal Code:", bg="white",
+                     fg="black", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="e")
+    label.grid(column=4, row=3)
+    label = tk.Label(customerInfoFrameB, text=info[8], bg="white",
+                     fg="blue", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="w")
+    label.grid(column=5, row=3)
+
+    label = tk.Label(customerInfoFrameB, text="Birth Date:", bg="white",
+                     fg="black", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="e")
+    label.grid(column=0, row=4)
+    label = tk.Label(customerInfoFrameB, text=info[9], bg="white",
+                     fg="blue", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="w")
+    label.grid(column=1, row=4)
+    label = tk.Label(customerInfoFrameB, text="Age:", bg="white", fg="black",
+                     font="Times 12", borderwidth=0, relief="solid", width=15,
+                     anchor="e")
+    label.grid(column=2, row=4)
+    label = tk.Label(customerInfoFrameB, text=info[10], bg="white",
+                     fg="blue", font="Times 12", borderwidth=0,
+                     relief="solid", width=15, anchor="w")
+    label.grid(column=3, row=4)
+
+    button = tk.Button(customerInfoFrameC, text="Add Pawn",
+                       font="Times 18", bg=bgcolor, fg="red", command=temp1)
+    button.grid(column=0, row=0)
+    button = tk.Button(customerInfoFrameC, text="View Active Pawns",
+                       font="Times 18", bg=bgcolor, fg="red", command=temp2)
+    button.grid(column=1, row=0)
+    button = tk.Button(customerInfoFrameC, text="View History",
+                       font="Times 18", bg=bgcolor, fg="red", command=temp3)
+    button.grid(column=2, row=0)
+
+    customerInfoFrameA.grid()
+    customerInfoFrameB.grid()
+    customerInfoFrameC.grid()
+
+
+def temp1():
+    print('poopoo peepee 1')
+
+
+def temp2():
+    print('poopoo peepee 2')
+
+
+def temp3():
+    print('poopoo peepee 3')
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -649,6 +818,7 @@ def check_expired():
     f.grid_remove()
     expiredItemFrame.grid()
     list_expired()
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
