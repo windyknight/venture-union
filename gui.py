@@ -160,29 +160,39 @@ title = tk.Label(findItemFrameA, text="Item Registry",
                  bg=bgcolor, fg="black", font="Times 32")
 title.grid(column=1, row=0)
 
-#search result labels
-#itemAttributes found in addAnItem page
-#itemAttributes = ["Item#","Category","Description","Risk Level", "Amount"]
-itemWidth = [10,20,50,10,10]
+# search result labels
+# itemAttributes found in addAnItem page
+# itemAttributes = ["Item#","Category","Description","Risk Level", "Amount"]
+itemWidth = [10, 20, 50, 10, 10]
+
 
 def constructItemSearchHeaders():
     for i in range(len(itemAttributes)):
-        label = tk.Label(findItemFrameB, text=itemAttributes[i], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=itemWidth[i])
-        label.grid(column=i,row=0)
+        label = tk.Label(findItemFrameB, text=itemAttributes[i], bg=bgcolor,
+                         fg="black", font="Times 12", borderwidth=1,
+                         relief="solid", width=itemWidth[i])
+        label.grid(column=i, row=0)
+
+
 constructItemSearchHeaders()
 
-#search
-searchLabel = tk.Label(findItemFrameA, text="Search item: ", bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid")
-searchLabel.grid(column=0,row=1)
+# search
+searchLabel = tk.Label(findItemFrameA, text="Search item: ", bg=bgcolor,
+                       fg="black", font="Times 18", borderwidth=1,
+                       relief="solid")
+searchLabel.grid(column=0, row=1)
 
 searchTerm = tk.StringVar()
-searchBar = tk.Entry(findItemFrameA, width=60, font="Times 18", textvariable=searchTerm)
-searchBar.grid(column=1,row=1)
+searchBar = tk.Entry(findItemFrameA, width=60,
+                     font="Times 18", textvariable=searchTerm)
+searchBar.grid(column=1, row=1)
 
-def search():       
-    query = "SELECT * FROM item WHERE description ILIKE '%{0}%'".format(searchTerm.get())
+
+def search():
+    query = "SELECT * FROM item WHERE description ILIKE '%{0}%'".format(
+        searchTerm.get())
     cur.execute(query)
-    
+
     rows = cur.fetchall()
     for w in findItemFrameB.winfo_children():
         w.destroy()
@@ -220,7 +230,8 @@ searchButton.grid(column=2, row=1)
 findItemFrameB = Frame(findItemFrame)
 findItemFrameB.configure(bg=bgcolor)
 
-#back
+
+# back
 def goBack():
     findItemFrame.grid_remove()
     f.grid()
