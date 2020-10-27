@@ -140,7 +140,7 @@ searchBar = tk.Entry(findItemFrameA, width=60, font="Times 18")
 searchBar.grid(column=1,row=1)
 
 def search():        
-    cur.execute(f"SELECT * FROM item WHERE description LIKE '%{searchBar.get()}%'")
+    cur.execute(f"SELECT * FROM item WHERE description ILIKE '%{searchBar.get()}%'")
     
     rows = cur.fetchall()
     
@@ -311,21 +311,25 @@ searchLabel.grid(column=0,row=1)
 searchBar = tk.Entry(regCustomerFrameA, width=60, font="Times 18")
 searchBar.grid(column=1,row=1)
 
+
 def search():
+    #erase previous searches
     i=0
     for a in regCustomerFrameB.winfo_children():
         if i < len(customerAttributes):
             i+=1
         else:
             a.destroy()
-        
-    cur.execute(f"SELECT * FROM customer WHERE last_name LIKE '%{searchBar.get()}%'")
+     
+    #create results for current search   
+    cur.execute(f"SELECT * FROM customer WHERE last_name ILIKE '%{searchBar.get()}%'")
     
     rows = cur.fetchall()
     
     i = 1
     for r in rows:
-        customerID = tk.Label(regCustomerFrameB, text=r[0], bg="white", fg="black", font="Times 12", wraplength=225)
+        
+        customerID = tk.Button(regCustomerFrameB, text=r[0], bg="white", fg="black", font="Times 12", wraplength=225, command=customerInfo)
         customerID.grid(column=0,row=i)
         lastName = tk.Label(regCustomerFrameB, text=r[1], bg="white", fg="black", font="Times 12", wraplength=225)
         lastName.grid(column=1,row=i)
@@ -376,7 +380,19 @@ regCustomerFrameB.grid()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#functions
+#payment page (labelled "Process a Payement")
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#extend page (labelled "Extend a Loan")
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#expire page (labelled "Report Expired Inventory")
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#functions for moving from main to other pages
 def add_item():
     f.grid_remove()
     addItemFrame.grid()
