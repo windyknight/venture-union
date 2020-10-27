@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import *
 import connect
-from connect import cur
+from connect import cur, con
+from datetime import date
 
 #creating a window
 win = tk.Tk()
@@ -415,17 +416,11 @@ searchLabel.grid(column=0,row=1)
 searchBar = tk.Entry(processPaymentFrameA, width=20, font="Times 18")
 searchBar.grid(column=1,row=1)
 
-def submit():
-	print("nothing here yet")
-
-submitButton = tk.Button(processPaymentFrameA, text="Submit Reciept", font="Times 18", bg=bgcolor, fg="black",command=submit)
-submitButton.grid(column=3,row=1)
-
 #labels
 recieptAttributes = ["Ticket No: ", "Pawn Date: ", "Payment Date: ", "Customer: ", "Due Date: ", "Address: ", "Mobile", "Landline: "]
 labelWidth = 15
 recieptDetails = []
-recieptDetailEntry = [] #payment date and amount paid
+recieptDetailEntry = [] #payment date
 
 recieptHeader = tk.Label(processPaymentRecieptHeader, text="Reciept", bg="black", fg=bgcolor, font="Times 12", borderwidth=1,relief="solid", width=100)
 recieptHeader.grid(column=0,row=0)
@@ -439,7 +434,7 @@ for i in range(0,2):
 			a += 1
 		else:
 			if (a == 3):
-				label = tk.Entry(processPaymentTicketDetailsA, bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=17)
+				label = tk.Label(processPaymentTicketDetailsA, text=date.today().strftime("%B %d, %Y"), bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=17)
 				label.grid(column=j,row=i)
 				recieptDetailEntry.append(label)
 			else:
@@ -498,11 +493,20 @@ amountPaidLabel = tk.Label(processPaymentDue, text="Amount Paid: ", bg=bgcolor, 
 amountPaidLabel.grid(column=4,row=2)
 amountPaid = tk.Entry(processPaymentDue, bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=17)
 amountPaid.grid(column=5,row=2)
-recieptDetailEntry.append(amountPaid)
 
 def search():
+	try:
+		int(searchBar.get())
+	except Exception:
+		searchBar.configure(text="Enter A Ticket Number")
+		return
+
 	cur.execute(f"SELECT DISTINCT pt.ticket_no, pt.pawn_date, CONCAT(c.last_name, ', ', c.given_name, ' ', c.middle_initial, '.' ), pt.due_date, CONCAT(c.address, ', ', c.city), c.mobile, c.landline FROM pawn_ticket pt, inventory_tag it, customer c WHERE pt.ticket_no={searchBar.get()} AND pt.ticket_no=it.ticket_no;")
 	rows = cur.fetchone()
+
+	if(str(rows) == "None"):
+		searchBar.configure(text="Cannot Find Ticket")
+		return
 
 	a=0
 	for i in recieptDetails:
@@ -522,7 +526,7 @@ def search():
 		itemAmount.grid(column=2,row=a)
 		itemInterestRate = tk.Label(processPaymentPawnedItems, text=i[3], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=15)
 		itemInterestRate.grid(column=3,row=a)
-		itemInterest = tk.Label(processPaymentPawnedItems, text=i[4], bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=15)
+		itemInterest = tk.Label(processPaymentPawnedItems, text=round(i[4], 2), bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=15)
 		itemInterest.grid(column=4,row=a)
 		a+=1
 
@@ -533,12 +537,24 @@ def search():
 
 	a=1
 	for i in recieptPaymentDueDetails:
-		i.configure(text=rows[a])
+		i.configure(text=round(rows[a], 2))
 		a+=1
-
 
 searchButton = tk.Button(processPaymentFrameA, text="Search and Create Reciept", font="Times 18", bg=bgcolor, fg="black",command=search)
 searchButton.grid(column=2,row=1)
+
+def submit():
+	print(recieptDetails[0].cget('text'))
+	if (recieptDetails[0].cget('text') == " "):
+		searchBar.configure(text="No Ticket Loaded")
+		return
+
+	cur.execute(f"UPDATE pawn_ticket pt SET payment_date='{date.today().isoformat()}' WHERE pt.ticket_no = {recieptDetails[0].cget('text')}")
+	con.commit()
+
+
+submitButton = tk.Button(processPaymentFrameA, text="Submit Reciept", font="Times 18", bg=bgcolor, fg="black",command=submit)
+submitButton.grid(column=3,row=1)
 
 #back
 def goBack():
