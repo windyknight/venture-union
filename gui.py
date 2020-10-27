@@ -16,6 +16,20 @@ win.geometry(f"{width}x{height}")
 win.configure(bg=bgcolor)
 win.resizable(False,False)
 
+#main frame
+f = Frame(win)
+f.configure(bg=bgcolor)
+
+#buttons
+addAnItem = tk.Button(f, text="Add an Item", font="Times 18", bg=bgcolor, fg="black")
+findAnItem = tk.Button(f, text="Find an Item", font="Times 18", bg=bgcolor, fg="black")
+newCustomer = tk.Button(f, text="Register a Customer", font="Times 18", bg=bgcolor, fg="black")
+findCustomer = tk.Button(f, text="Find a Customer", font="Times 18", bg=bgcolor, fg="black")
+inventoryTag = tk.Button(f, text="Create an Inventory Tag", font="Times 18", bg=bgcolor, fg="black")
+payment = tk.Button(f, text="Process a Payment", font="Times 18", bg=bgcolor, fg="black")
+extend = tk.Button(f, text="Extend a Loan", font="Times 18", bg=bgcolor, fg="black")
+expire = tk.Button(f, text="Report Expired Inventory", font="Times 18", bg=bgcolor, fg="black")
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #addAnItem page                                                                                                                                                                                                                                                                                                                                                                                       
@@ -39,8 +53,8 @@ itemWidth = [10,10,10,10,10]
 itemDetails = []
 itemNum = 0
 
-#if str(cur.execute("SELECT COUNT(*) FROM item;")) != "None":
-#    itemNum = int(cur.execute("SELECT COUNT(*) FROM item;"))
+if str(cur.execute("SELECT COUNT(*) FROM item;")) != "None":
+    itemNum = int(cur.execute("SELECT COUNT(*) FROM item;"))
 
 i = 0
 for a in itemAttributes:
@@ -60,6 +74,7 @@ def addItemAction():
     #itemNum+=1
     #cur.execute(f"INSERT INTO item VALUES ({itemNum},'{itemDetails[0]}','{itemDetails[1]}','{itemDetails[2]}',{itemDetails[3]});")
     print("don't forget to fix addItemAction()")
+    findAnItem.configure(state=NORMAL)
     
 
 addItemButton = tk.Button(addItemFrameA, text="Add Item", font="Times 18", bg=bgcolor, fg="black",command=addItemAction)
@@ -153,6 +168,12 @@ newCustomerFrameA = Frame(newCustomerFrame)
 newCustomerFrameA.configure(bg=bgcolor)
 newCustomerFrameB = Frame(newCustomerFrame)
 newCustomerFrameB.configure(bg=bgcolor)
+
+#title
+blank1 = tk.Label(newCustomerFrameA, text="             ", bg=bgcolor, font="Times 32",width=13)
+title = tk.Label(newCustomerFrameA, text="Add to Item Registry", bg=bgcolor, fg="black", font="Times 32")
+blank1.grid(column=0,row=0)
+title.grid(column=1,row=0)
 
 #labels
 customerAttributes = ["Customer ID", "Last Name", "Given Name", "MI", "Address", "City", "Mobile", "Landline", "Postal Code", "Birth Date", "Age"]
@@ -257,10 +278,6 @@ def customer_registry():
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#main frame
-f = Frame(win)
-f.configure(bg=bgcolor)
-
 #title label
 blank = tk.Label(f, text="             ", bg=bgcolor, font="Times 32",width=13)
 title = tk.Label(f, text="VENTURE UNION", bg=bgcolor, fg="black", font="Times 32")
@@ -268,10 +285,9 @@ blank.grid(column=0,row=0)
 title.grid(column=1,row=0)
 
 #item appraisal
-addAnItem = tk.Button(f, text="Add an Item", font="Times 18", bg=bgcolor, fg="black",command=add_item)
+addAnItem.configure(command=add_item)
+findAnItem.configure(command=item_registry)
 addAnItem.grid(column=1)
-
-findAnItem = tk.Button(f, text="Find an Item", font="Times 18", bg=bgcolor, fg="black",command=item_registry)
 findAnItem.grid(column=1)
 
 #itemNum found in addAnItem page
@@ -281,27 +297,27 @@ if itemNum == 0:
     findAnItem.configure(state=DISABLED)
 
 #loan computation and releasing
-newCustomer = tk.Button(f, text="Register a Customer", font="Times 18", bg=bgcolor, fg="black",command=item_registry)
+newCustomer.configure(command=item_registry)
 newCustomer.grid(column=1)
 
-findCustomer = tk.Button(f, text="Find a Customer", font="Times 18", bg=bgcolor, fg="black",command=customer_registry)
+findCustomer.configure(command=customer_registry)
 findCustomer.grid(column=1)
 
 if str(cur.execute("SELECT COUNT(*) FROM customer")) == "None":
     findCustomer.configure(state=DISABLED)
 
 #inventory management
-inventoryTag = tk.Button(f, text="Create an Inventory Tag", font="Times 18", bg=bgcolor, fg="black",command=item_registry)
+inventoryTag.configure(command=item_registry)
 newCustomer.grid(column=1)
 
 #business processes
-payment = tk.Button(f, text="Process a Payment", font="Times 18", bg=bgcolor, fg="black",command=item_registry)
+payment.configure(command=item_registry)
 payment.grid(column=1)
 
-extend = tk.Button(f, text="Extend a Loan", font="Times 18", bg=bgcolor, fg="black",command=item_registry)
+extend.configure(command=item_registry)
 extend.grid(column=1)
 
-expire = tk.Button(f, text="Report Expired Inventory", font="Times 18", bg=bgcolor, fg="black",command=item_registry)
+expire.configure(command=item_registry)
 expire.grid(column=1)
 
 f.grid()
