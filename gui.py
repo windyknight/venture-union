@@ -389,8 +389,20 @@ processPaymentFrame.configure(bg=bgcolor)
 #subframes
 processPaymentFrameA = Frame(processPaymentFrame)
 processPaymentFrameA.configure(bg=bgcolor)
-processPaymentFrameB = Frame(processPaymentFrame)
-processPaymentFrameB.configure(bg=bgcolor)
+processPaymentRecieptHeader = Frame(processPaymentFrame)
+processPaymentRecieptHeader.configure(bg=bgcolor)
+processPaymentTicketDetailsA = Frame(processPaymentFrame)
+processPaymentTicketDetailsA.configure(bg=bgcolor)
+processPaymentAddress = Frame(processPaymentFrame)
+processPaymentAddress.configure(bg=bgcolor)
+processPaymentTicketDetailsB = Frame(processPaymentFrame)
+processPaymentTicketDetailsB.configure(bg=bgcolor)
+processPaymentPawnedItemsHeader = Frame(processPaymentFrame)
+processPaymentPawnedItemsHeader.configure(bg=bgcolor)
+processPaymentPawnedItems = Frame(processPaymentFrame)
+processPaymentPawnedItems.configure(bg=bgcolor)
+processPaymentDue = Frame(processPaymentFrame)
+processPaymentDue.configure(bg=bgcolor)
 
 #title
 title = tk.Label(processPaymentFrameA, text="Ticket Registry", bg=bgcolor, fg="black", font="Times 32")
@@ -400,7 +412,7 @@ title.grid(column=1,row=0)
 searchLabel = tk.Label(processPaymentFrameA, text="Search ticket: ", bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid")
 searchLabel.grid(column=0,row=1)
 
-searchBar = tk.Entry(processPaymentFrameA, width=45, font="Times 18")
+searchBar = tk.Entry(processPaymentFrameA, width=20, font="Times 18")
 searchBar.grid(column=1,row=1)
 
 def search():
@@ -409,16 +421,88 @@ def search():
 searchButton = tk.Button(processPaymentFrameA, text="Search and Create Reciept", font="Times 18", bg=bgcolor, fg="black",command=search)
 searchButton.grid(column=2,row=1)
 
+def submit():
+	print("nothing here yet")
+
+submitButton = tk.Button(processPaymentFrameA, text="Submit Reciept", font="Times 18", bg=bgcolor, fg="black",command=submit)
+submitButton.grid(column=3,row=1)
+
 #labels
 recieptAttributes = ["Ticket No: ", "Pawn Date: ", "Payment Date: ", "Customer: ", "Due Date: ", "Address: ", "Mobile", "Landline: "]
 labelWidth = 15
 recieptDetails = []
-recieptDetailEntry = []
+recieptDetailEntry = [] #payment date and amount paid
 
-label = tk.Label(processPaymentFrameB, text="Reciept", bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=100)
+recieptHeader = tk.Label(processPaymentRecieptHeader, text="Reciept", bg="black", fg=bgcolor, font="Times 12", borderwidth=1,relief="solid", width=100)
+recieptHeader.grid(column=0,row=0)
+
+a = 0
+for i in range(0,2):
+	for j in range (0,6):
+		if (j%2 == 0 and a <= 4):
+			label = tk.Label(processPaymentTicketDetailsA, text=recieptAttributes[a], bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
+			label.grid(column=j,row=i)
+			a += 1
+		else:
+			if (a == 3):
+				label = tk.Entry(processPaymentTicketDetailsA, bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=17)
+				label.grid(column=j,row=i)
+				recieptDetailEntry.append(label)
+			else:
+				label = tk.Label(processPaymentTicketDetailsA, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=17)
+				label.grid(column=j,row=i)
+				recieptDetails.append(label)
+
+label = tk.Label(processPaymentAddress, text=recieptAttributes[a], bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
 label.grid(column=0,row=0)
+a += 1
+label = tk.Label(processPaymentAddress, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=84)
+label.grid(column=1,row=0)
+recieptDetails.append(label)
 
-#for attribute in recieptAttributes: 
+for j in range (0,6):
+	if (j%2 == 0 and a <= 7):
+		label = tk.Label(processPaymentTicketDetailsB, text=recieptAttributes[a], bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
+		label.grid(column=j,row=0)
+		a += 1
+	else:
+		label = tk.Label(processPaymentTicketDetailsB, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=17)
+		label.grid(column=j,row=0)
+		recieptDetails.append(label)
+
+itemsHeader = tk.Label(processPaymentPawnedItemsHeader, text="Items", bg="gray", fg=bgcolor, font="Times 12", borderwidth=0,relief="solid", width=100)
+itemsHeader.grid(column=0,row=0)
+
+pawnedItemAttributes = ["Category","Description","Loan Amount","Rate", "Interest"]
+pawnedItemWidth = [20,35,15,15,15]
+
+a=0
+for i in pawnedItemAttributes:
+    label = tk.Label(processPaymentPawnedItems, text=i, bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=pawnedItemWidth[a])
+    label.grid(column=a,row=0)
+    a+=1
+
+noItemsLabel = tk.Label(processPaymentDue, text="# of items: ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
+noItemsLabel.grid(column=0,row=0)
+noItems = tk.Label(processPaymentDue, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=17)
+noItemsLabel.grid(column=1,row=0)
+
+recieptPaymentDue = ["Total Loan: ", "Service Charge: ", "Total Amount Due: "]
+recieptPaymentDueDetails = []
+a=0
+for i in recieptPaymentDue:
+	label = tk.Label(processPaymentDue, text=i, bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
+	label.grid(column=2,row=a)
+	label = tk.Label(processPaymentDue, text=" ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=17)
+	label.grid(column=3,row=a)
+	recieptPaymentDueDetails.append(label)
+	a += 1
+
+amountPaidLabel = tk.Label(processPaymentDue, text="Amount Paid: ", bg=bgcolor, fg="black", font="Times 12", borderwidth=0,relief="solid", width=16)
+amountPaidLabel.grid(column=4,row=2)
+amountPaid = tk.Entry(processPaymentDue, bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=17)
+amountPaid.grid(column=5,row=2)
+recieptDetailEntry.append(amountPaid)
 
 #back
 def goBack():
@@ -429,7 +513,13 @@ back = tk.Button(processPaymentFrameA, text="Go Back", font="Times 18", bg=bgcol
 back.grid(column=2,row=0)
 
 processPaymentFrameA.grid()
-processPaymentFrameB.grid()
+processPaymentRecieptHeader.grid()
+processPaymentTicketDetailsA.grid()
+processPaymentAddress.grid()
+processPaymentTicketDetailsB.grid()
+processPaymentPawnedItemsHeader.grid()
+processPaymentPawnedItems.grid()
+processPaymentDue.grid()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
