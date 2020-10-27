@@ -524,7 +524,8 @@ def list_expired():
         "SELECT i.item_no, i.category, i.description, p.due_date, i.amount, "
         "r.interest_rate FROM item i, pawn_ticket p, risk r, inventory_tag t "
         "WHERE i.item_no=t.item_no AND t.ticket_no=p.ticket_no AND "
-        "i.risk_level=r.risk_level AND p.due_date <= CURRENT_DATE;")
+        "i.risk_level=r.risk_level AND p.due_date <= CURRENT_DATE AND "
+        "p.payment_date IS NULL;")
 
     rows = cur.fetchall()
 
