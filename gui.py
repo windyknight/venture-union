@@ -42,14 +42,14 @@ addItemFrameB = Frame(addItemFrameA)
 addItemFrameB.configure(bg=bgcolor)
 
 #title
-blank1 = tk.Label(addItemFrameA, text="             ", bg=bgcolor, font="Times 32",width=13)
+blank1 = tk.Label(addItemFrameA, text="             ", bg=bgcolor, font="Times 32",width=11)
 title = tk.Label(addItemFrameA, text="Add to Item Registry", bg=bgcolor, fg="black", font="Times 32")
 blank1.grid(column=0,row=0)
 title.grid(column=1,row=0)
 
 #labels & entry fields
 itemAttributes = ["Item#","Category","Description","Risk Level", "Amount"]
-itemWidth = [10,10,10,10,10]
+labelWidth = 20
 itemDetails = []
 itemNum = 0
 
@@ -58,22 +58,42 @@ if str(cur.execute("SELECT COUNT(*) FROM item;")) != "None":
 
 i = 0
 for a in itemAttributes:
-    label = tk.Label(addItemFrameB, text=a, bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid", width=itemWidth[i])
+    label = tk.Label(addItemFrameB, text=a, bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid", width=labelWidth)
     label.grid(column=0,row=i)
     if a == "Item#":
-        label2 = tk.Label(addItemFrameB, text=itemNum+1, bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid", width=itemWidth[i])
+        label2 = tk.Label(addItemFrameB, text=itemNum+1, bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid", width=labelWidth)
         label2.grid(column=1,row=i)
+        itemDetails.append(label2)
     else:
-        entryField = tk.Entry(addItemFrameB, bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid", width=itemWidth[i])
-        entryField.grid(column=1,row=i)  
+        entryField = tk.Entry(addItemFrameB, bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid", width=labelWidth)
+        entryField.grid(column=1,row=i)
         itemDetails.append(entryField)
     i+=1
 
+print(len(itemDetails))
+
 #button
 def addItemAction():
-    #itemNum+=1
-    #cur.execute(f"INSERT INTO item VALUES ({itemNum},'{itemDetails[0]}','{itemDetails[1]}','{itemDetails[2]}',{itemDetails[3]});")
-    print("don't forget to fix addItemAction()")
+    #checking for null
+    warning = tk.Label(addItemFrameA, text="", bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid", width=labelWidth)
+    if (itemDetails[1] == '') or (itemDetails[3] != '') or (itemDetails[4] != ''):
+        if itemDetails[1] == '':
+            warning.configure(text=text+"\nPlease provide a category.")
+        
+        if itemDetails[3] == '':
+            warning.configure(text=text+"\nPlease select a risk level.")
+            
+        if itemDetails[4] == '':
+            warning.configure(text=text+"\nPlease provide an amount.")
+        
+        warning.grid(column=1,row=3)
+    else:   
+        cur.execute(f"INSERT INTO item VALUES ({itemDetails[0].cget('text')},'{itemDetails[1].get()}','{itemDetails[2].get()}','{itemDetails[3].get()}',{itemDetails[4].get()});")
+        
+        for a in itemDetails:
+            a.delete(0,'end')
+    
+    print("Integrate sql for addItemAction() here")
     findAnItem.configure(state=NORMAL)
     
 
@@ -166,17 +186,63 @@ newCustomerFrame.configure(bg=bgcolor)
 
 newCustomerFrameA = Frame(newCustomerFrame)
 newCustomerFrameA.configure(bg=bgcolor)
-newCustomerFrameB = Frame(newCustomerFrame)
+newCustomerFrameB = Frame(newCustomerFrameA)
 newCustomerFrameB.configure(bg=bgcolor)
 
 #title
-blank1 = tk.Label(newCustomerFrameA, text="             ", bg=bgcolor, font="Times 32",width=13)
-title = tk.Label(newCustomerFrameA, text="Add to Item Registry", bg=bgcolor, fg="black", font="Times 32")
+blank1 = tk.Label(newCustomerFrameA, text="             ", bg=bgcolor, font="Times 32",width=11)
+title = tk.Label(newCustomerFrameA, text="Add to Customer Registry", bg=bgcolor, fg="black", font="Times 32")
 blank1.grid(column=0,row=0)
 title.grid(column=1,row=0)
 
 #labels
 customerAttributes = ["Customer ID", "Last Name", "Given Name", "MI", "Address", "City", "Mobile", "Landline", "Postal Code", "Birth Date", "Age"]
+labelWidth = 20
+customerDetails = []
+customerIDNum = 0
+
+if str(cur.execute("SELECT COUNT(*) FROM item;")) != "None":
+    customerIDNum = int(cur.execute("SELECT COUNT(*) FROM item;"))
+
+i = 0
+for a in customerAttributes:
+    label = tk.Label(newCustomerFrameB, text=a, bg="white", fg="black", font="Times 18", borderwidth=1,relief="solid",width=labelWidth)
+    label.grid(column=0,row=i)
+    
+    if a == "Customer ID":
+        label2 = tk.Label(newCustomerFrameB, text=customerIDNum+1, bg="white", fg="black", font="Times 18", borderwidth=1,relief="solid",width=labelWidth)
+        label2.grid(column=1,row=i)
+        customerDetails.append(label2)
+    else:
+        e = tk.Entry(newCustomerFrameB, bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid", width=labelWidth)
+        e.grid(column=1,row=i)
+        customerDetails.append(e)
+    i+=1
+    
+#button
+def addCustomerAction():
+    cur.execute(f"INSERT INTO item VALUES ({customerDetails[0].cget('text')},'{customerDetails[1].get()}','{customerDetails[2].get()}','{customerDetails[3].get()}',{customerDetails[4].get()},{customerDetails[5].get()},{customerDetails[6].get()},{customerDetails[7].get()},{customerDetails[8].get()},{customerDetails[9].get()});")
+    
+    for a in customerDetails:
+        a.delete(0,'end')
+    
+    print("Integrate sql for adCustomerAction() here")
+
+regCustomerButton = tk.Button(newCustomerFrameA, text="Add Customer", font="Times 18", bg=bgcolor, fg="black",command=addCustomerAction)
+
+
+#back
+def goBack():
+    newCustomerFrame.grid_remove()
+    win.geometry(f"{width}x{height}")
+    f.grid()
+
+back = tk.Button(newCustomerFrameA, text="Go Back", font="Times 18", bg=bgcolor, fg="black",command=goBack)
+back.grid(column=2,row=0)
+
+newCustomerFrameA.grid(column=0,row=0)
+newCustomerFrameB.grid(column=1,row=1)
+regCustomerButton.grid(column=1,row=2)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -266,10 +332,13 @@ def add_item():
     f.grid_remove()
     addItemFrame.grid()
     
-
 def item_registry():
     f.grid_remove()
     findItemFrame.grid()
+    
+def new_customer():
+    f.grid_remove()
+    newCustomerFrame.grid()
     
 def customer_registry():
     f.grid_remove()
@@ -297,7 +366,7 @@ if itemNum == 0:
     findAnItem.configure(state=DISABLED)
 
 #loan computation and releasing
-newCustomer.configure(command=item_registry)
+newCustomer.configure(command=new_customer)
 newCustomer.grid(column=1)
 
 findCustomer.configure(command=customer_registry)
