@@ -382,6 +382,44 @@ regCustomerFrameB.grid()
 
 #payment page (labelled "Process a Payement")
 
+#Process Payment page
+processPaymentFrame = Frame(win)
+processPaymentFrame.configure(bg=bgcolor)
+
+#subframes
+processPaymentFrameA = Frame(processPaymentFrame)
+processPaymentFrameA.configure(bg=bgcolor)
+processPaymentFrameB = Frame(processPaymentFrame)
+processPaymentFrameB.configure(bg=bgcolor)
+
+#title
+title = tk.Label(processPaymentFrameA, text="Ticket Registry", bg=bgcolor, fg="black", font="Times 32")
+title.grid(column=1,row=0)
+
+#search
+searchLabel = tk.Label(processPaymentFrameA, text="Search ticket: ", bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid")
+searchLabel.grid(column=0,row=1)
+
+searchBar = tk.Entry(processPaymentFrameA, width=60, font="Times 18")
+searchBar.grid(column=1,row=1)
+
+def search():
+
+searchButton = tk.Button(processPaymentFrameA, text="Search", font="Times 18", bg=bgcolor, fg="black",command=search)
+searchButton.grid(column=2,row=1)
+
+back
+def goBack():
+    processPaymentFrame.grid_remove()
+    win.geometry(f"{width}x{height}")
+    f.grid()
+
+back = tk.Button(processPaymentFrameA, text="Go Back", font="Times 18", bg=bgcolor, fg="black",command=goBack)
+back.grid(column=2,row=0)
+
+processPaymentFrameA.grid()
+processPaymentFrameB.grid()
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #extend page (labelled "Extend a Loan")
@@ -408,7 +446,11 @@ def new_customer():
 def customer_registry():
     f.grid_remove()
     win.geometry("1080x720")
-    regCustomerFrame.grid()    
+    regCustomerFrame.grid()  
+
+def process_payment():
+	f.grid_remove()
+    processPaymentFrame.grid()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -451,7 +493,8 @@ inventoryTag.configure(command=item_registry)
 newCustomer.grid(column=1)
 
 #business processes
-payment.configure(command=item_registry)
+#process payment
+payment.configure(command=process_payment)
 payment.grid(column=1)
 
 extend.configure(command=item_registry)
