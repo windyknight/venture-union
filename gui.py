@@ -406,7 +406,10 @@ def customerSearch():
 
     # create results for current search
     cur.execute(
-        f"SELECT *, CAST((CAST(TO_CHAR(CURRENT_DATE, 'YYYYMMDD') AS INT) - CAST(TO_CHAR(birth_date, 'YYYYMMDD') AS INT)) AS INT)/10000 \"Age\" FROM customer WHERE last_name ILIKE '%{searchBar.get()}%' OR given_name ILIKE '%{searchBar.get()}%'")
+        f"SELECT *, CAST((CAST(TO_CHAR(CURRENT_DATE, 'YYYYMMDD') AS INT) - "
+        f"CAST(TO_CHAR(birth_date, 'YYYYMMDD') AS INT)) AS INT)/10000 \"Age\" "
+        f"FROM customer WHERE last_name ILIKE '%{searchBar.get()}%' OR "
+        f"given_name ILIKE '%{searchBar.get()}%'")
 
     rows = cur.fetchall()
 
