@@ -18,22 +18,83 @@ win.resizable(False,False)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#item appraisal page
-itemFrame = Frame(win)
-itemFrame.configure(bg=bgcolor)
+#addAnItem page                                                                                                                                                                                                                                                                                                                                                                                       
+addItemFrame = Frame(win)
+addItemFrame.configure(bg=bgcolor)
 
-itemFrameA = Frame(itemFrame)
-itemFrameA.configure(bg=bgcolor)
+addItemFrameA = Frame(addItemFrame)
+addItemFrameA.configure(bg=bgcolor)
+addItemFrameB = Frame(addItemFrameA)
+addItemFrameB.configure(bg=bgcolor)
 
 #title
-title = tk.Label(itemFrameA, text="Item Registry", bg=bgcolor, fg="black", font="Times 32")
+blank1 = tk.Label(addItemFrameA, text="             ", bg=bgcolor, font="Times 32",width=13)
+title = tk.Label(addItemFrameA, text="Add to Item Registry", bg=bgcolor, fg="black", font="Times 32")
+blank1.grid(column=0,row=0)
+title.grid(column=1,row=0)
+
+#labels & entry fields
+itemAttributes = ["Item#","Category","Description","Risk Level", "Amount"]
+itemWidth = [10,10,10,10,10]
+itemDetails = []
+itemNum = 0
+
+#if str(cur.execute("SELECT COUNT(*) FROM item;")) != "None":
+#    itemNum = int(cur.execute("SELECT COUNT(*) FROM item;"))
+
+i = 0
+for a in itemAttributes:
+    label = tk.Label(addItemFrameB, text=a, bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid", width=itemWidth[i])
+    label.grid(column=0,row=i)
+    if a == "Item#":
+        label2 = tk.Label(addItemFrameB, text=itemNum+1, bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid", width=itemWidth[i])
+        label2.grid(column=1,row=i)
+    else:
+        entryField = tk.Entry(addItemFrameB, bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid", width=itemWidth[i])
+        entryField.grid(column=1,row=i)  
+        itemDetails.append(entryField)
+    i+=1
+
+#button
+def addItemAction():
+    #itemNum+=1
+    #cur.execute(f"INSERT INTO item VALUES ({itemNum},'{itemDetails[0]}','{itemDetails[1]}','{itemDetails[2]}',{itemDetails[3]});")
+    print("don't forget to fix addItemAction()")
+    
+
+addItemButton = tk.Button(addItemFrameA, text="Add Item", font="Times 18", bg=bgcolor, fg="black",command=addItemAction)
+
+
+#back
+def goBack():
+    addItemFrame.grid_remove()
+    f.grid()
+
+back = tk.Button(addItemFrameA, text="Go Back", font="Times 18", bg=bgcolor, fg="black",command=goBack)
+back.grid(column=2,row=0)
+
+addItemFrameA.grid(column=0,row=0)
+addItemFrameB.grid(column=1,row=1)
+addItemButton.grid(column=1,row=2)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#findAnItem page
+findItemFrame = Frame(win)
+findItemFrame.configure(bg=bgcolor)
+
+findItemFrameA = Frame(findItemFrame)
+findItemFrameA.configure(bg=bgcolor)
+
+#title
+title = tk.Label(findItemFrameA, text="Item Registry", bg=bgcolor, fg="black", font="Times 32")
 title.grid(column=1,row=0)
 
 #search
-searchLabel = tk.Label(itemFrameA, text="Search item: ", bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid")
+searchLabel = tk.Label(findItemFrameA, text="Search item: ", bg=bgcolor, fg="black", font="Times 18", borderwidth=1,relief="solid")
 searchLabel.grid(column=0,row=1)
 
-searchBar = tk.Entry(itemFrameA, width=60, font="Times 18")
+searchBar = tk.Entry(findItemFrameA, width=60, font="Times 18")
 searchBar.grid(column=1,row=1)
 
 def search():        
@@ -54,36 +115,47 @@ def search():
         amount.grid(column=4,row=0)
     
 
-searchButton = tk.Button(itemFrameA, text="Search", font="Times 18", bg=bgcolor, fg="black",command=search)
+searchButton = tk.Button(findItemFrameA, text="Search", font="Times 18", bg=bgcolor, fg="black",command=search)
 searchButton.grid(column=2,row=1)
 
-itemFrameB = Frame(itemFrame)
-itemFrameB.configure(bg=bgcolor)
+findItemFrameB = Frame(findItemFrame)
+findItemFrameB.configure(bg=bgcolor)
 
-#search results
-LitemNum = tk.Label(itemFrameB, text="Item#", bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=10)
-LitemNum.grid(column=0,row=0)
-Lcategory = tk.Label(itemFrameB, text="Category", bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=20)
-Lcategory.grid(column=1,row=0)
-Ldescription = tk.Label(itemFrameB, text="Description", bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=50)
-Ldescription.grid(column=2,row=0)
-Lrisk = tk.Label(itemFrameB, text="Risk Level", bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=10)
-Lrisk.grid(column=3,row=0)
-Lamount = tk.Label(itemFrameB, text="Amount", bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=10)
-Lamount.grid(column=4,row=0)
+#search result labels
+#itemAttributes found in addAnItem page
+#itemAttributes = ["Item#","Category","Description","Risk Level", "Amount"]
+itemWidth = [10,20,50,10,10]
+
+i=0
+for a in itemAttributes:
+    label = tk.Label(findItemFrameB, text=a, bg=bgcolor, fg="black", font="Times 12", borderwidth=1,relief="solid", width=itemWidth[i])
+    label.grid(column=i,row=0)
+    i+=1
 
 #back
-
 def goBack():
-    itemFrame.grid_remove()
-    win.geometry(f"{width}x{height}")
+    findItemFrame.grid_remove()
     f.grid()
 
-back = tk.Button(itemFrameA, text="Go Back", font="Times 18", bg=bgcolor, fg="black",command=goBack)
+back = tk.Button(findItemFrameA, text="Go Back", font="Times 18", bg=bgcolor, fg="black",command=goBack)
 back.grid(column=2,row=0)
 
-itemFrameA.grid()
-itemFrameB.grid()
+findItemFrameA.grid()
+findItemFrameB.grid()
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#New customer page
+newCustomerFrame = Frame(win)
+newCustomerFrame.configure(bg=bgcolor)
+
+newCustomerFrameA = Frame(newCustomerFrame)
+newCustomerFrameA.configure(bg=bgcolor)
+newCustomerFrameB = Frame(newCustomerFrame)
+newCustomerFrameB.configure(bg=bgcolor)
+
+#labels
+customerAttributes = ["Customer ID", "Last Name", "Given Name", "MI", "Address", "City", "Mobile", "Landline", "Postal Code", "Birth Date", "Age"]
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -97,7 +169,6 @@ regCustomerFrameA.configure(bg=bgcolor)
 regCustomerFrameB = Frame(regCustomerFrame)
 regCustomerFrameB.configure(bg=bgcolor)
 
-#for A
 #title
 title = tk.Label(regCustomerFrameA, text="Customer Registry", bg=bgcolor, fg="black", font="Times 32")
 title.grid(column=1,row=0)
@@ -145,7 +216,8 @@ searchButton = tk.Button(regCustomerFrameA, text="Search", font="Times 18", bg=b
 searchButton.grid(column=2,row=1)
 
 #labels
-customerAttributes = ["Customer ID", "Last Name", "Given Name", "MI", "Address", "City", "Mobile", "Landline", "Postal Code", "Birth Date", "Age"]
+#customerAttributes found in New Customer page
+#customerAttributes = ["Customer ID", "Last Name", "Given Name", "MI", "Address", "City", "Mobile", "Landline", "Postal Code", "Birth Date", "Age"]
 attributeWidths = [10,10,10,5,25,10,10,10,10,10,5]
 
 i = 0
@@ -168,17 +240,15 @@ regCustomerFrameB.grid()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#New customer page
-newCustomerFrameA = Frame(win)
-newCustomerFrameA.configure(bg=bgcolor)
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 #functions
-def item_appraisal():
+def add_item():
     f.grid_remove()
-    win.geometry(f"{width}x{height}")
-    itemFrame.grid()
+    addItemFrame.grid()
+    
+
+def item_registry():
+    f.grid_remove()
+    findItemFrame.grid()
     
 def customer_registry():
     f.grid_remove()
@@ -198,29 +268,41 @@ blank.grid(column=0,row=0)
 title.grid(column=1,row=0)
 
 #item appraisal
-itemAppraisalButton = tk.Button(f, text="Find an Item", font="Times 18", bg=bgcolor, fg="black",command=item_appraisal)
-itemAppraisalButton.grid(column=1,row=1)
+addAnItem = tk.Button(f, text="Add an Item", font="Times 18", bg=bgcolor, fg="black",command=add_item)
+addAnItem.grid(column=1)
+
+findAnItem = tk.Button(f, text="Find an Item", font="Times 18", bg=bgcolor, fg="black",command=item_registry)
+findAnItem.grid(column=1)
+
+#itemNum found in addAnItem page
+#itemNum = cur.execute("SELECT COUNT(*) FROM item;")
+
+if itemNum == 0:
+    findAnItem.configure(state=DISABLED)
 
 #loan computation and releasing
-findCustomer = tk.Button(f, text="Find a Customer", font="Times 18", bg=bgcolor, fg="black",command=customer_registry)
-findCustomer.grid(column=1,row=2)
+newCustomer = tk.Button(f, text="Register a Customer", font="Times 18", bg=bgcolor, fg="black",command=item_registry)
+newCustomer.grid(column=1)
 
-newCustomer = tk.Button(f, text="Register a Customer", font="Times 18", bg=bgcolor, fg="black",command=item_appraisal)
-newCustomer.grid(column=1,row=3)
+findCustomer = tk.Button(f, text="Find a Customer", font="Times 18", bg=bgcolor, fg="black",command=customer_registry)
+findCustomer.grid(column=1)
+
+if str(cur.execute("SELECT COUNT(*) FROM customer")) == "None":
+    findCustomer.configure(state=DISABLED)
 
 #inventory management
-inventoryTag = tk.Button(f, text="Create an Inventory Tag", font="Times 18", bg=bgcolor, fg="black",command=item_appraisal)
-newCustomer.grid(column=1,row=4)
+inventoryTag = tk.Button(f, text="Create an Inventory Tag", font="Times 18", bg=bgcolor, fg="black",command=item_registry)
+newCustomer.grid(column=1)
 
 #business processes
-payment = tk.Button(f, text="Process a Payment", font="Times 18", bg=bgcolor, fg="black",command=item_appraisal)
-payment.grid(column=1,row=5)
+payment = tk.Button(f, text="Process a Payment", font="Times 18", bg=bgcolor, fg="black",command=item_registry)
+payment.grid(column=1)
 
-extend = tk.Button(f, text="Extend a Loan", font="Times 18", bg=bgcolor, fg="black",command=item_appraisal)
-extend.grid(column=1,row=6)
+extend = tk.Button(f, text="Extend a Loan", font="Times 18", bg=bgcolor, fg="black",command=item_registry)
+extend.grid(column=1)
 
-expire = tk.Button(f, text="Report Expired Inventory", font="Times 18", bg=bgcolor, fg="black",command=item_appraisal)
-expire.grid(column=1,row=7)
+expire = tk.Button(f, text="Report Expired Inventory", font="Times 18", bg=bgcolor, fg="black",command=item_registry)
+expire.grid(column=1)
 
 f.grid()
 
