@@ -112,8 +112,8 @@ def addItemAction():
         warning.configure(text="")
         cur.execute(
             f"INSERT INTO item VALUES ({itemDetails[0].cget('text')},"
-            + f"'{itemDetails[1].get()}','{itemDetails[2].get()}',"
-            + f"'{itemDetails[3].get()}',{itemDetails[4].get()});")
+            f"'{itemDetails[1].get()}','{itemDetails[2].get()}',"
+            f"'{itemDetails[3].get()}',{itemDetails[4].get()});")
         for a in itemDetails:
             if a == itemDetails[0]:
                 a.configure(text=int(a.cget("text"))+1)
@@ -326,11 +326,11 @@ def addCustomerAction():
         warning.configure(text="")
         cur.execute(
             f"INSERT INTO customer VALUES ({customerDetails[0].cget('text')},"
-            + f"'{customerDetails[1].get()}','{customerDetails[2].get()}',"
-            + f"'{customerDetails[3].get()}','{customerDetails[4].get()}',"
-            + f"'{customerDetails[5].get()}','{customerDetails[6].get()}',"
-            + f"'{customerDetails[7].get()}',{customerDetails[8].get()},"
-            + f"'{customerDetails[9].get()}');")
+            f"'{customerDetails[1].get()}','{customerDetails[2].get()}',"
+            f"'{customerDetails[3].get()}','{customerDetails[4].get()}',"
+            f"'{customerDetails[5].get()}','{customerDetails[6].get()}',"
+            f"'{customerDetails[7].get()}',{customerDetails[8].get()},"
+            f"'{customerDetails[9].get()}');")
 
         for a in itemDetails:
             if a == itemDetails[0]:
