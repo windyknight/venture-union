@@ -62,3 +62,6 @@ INSERT INTO inventory_tag VALUES (456, 111);
 INSERT INTO item VALUES (999, 'Electronics', 'Nokia 3.1, black, with battery', 'Low', 1500.00);
 INSERT INTO inventory_tag VALUES (456, 999);
 INSERT INTO customer VALUES (6783, 'Htns', 'Aoeu', 'D', '123 road street', 'moon', '1234', '5678', 90, '1990-01-01');
+INSERT INTO item VALUES (603, 'Books', 'Autographed Harry Potter set', 'Medium', 2000.00);
+INSERT INTO pawn_ticket VALUES (123, 6783, '2019-01-01', '2019-02-01');
+INSERT INTO inventory_tag VALUES (123, 603);
